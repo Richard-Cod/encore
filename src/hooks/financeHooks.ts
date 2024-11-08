@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import financeService, {
+  CreateConsentPayload,
   CreateCustomerPayload,
 } from "@/logic/services/financeService";
 import { toast } from "./use-toast";
@@ -29,7 +30,6 @@ export function useGenerateToken({ onSuccess, onError }: QueryProps<void>) {
     queryFn: () => {
       const token = getCookie(AppConstants.access_token_key);
       setCookie(AppConstants.access_token_key, token);
-      console.log("current token ", token);
       if (token) {
         return { access_token: token };
       }
@@ -110,15 +110,12 @@ export function useGetCustomers({
   getProps,
   onSuccess,
   onError,
+  enabled,
 }: QueryProps<{ jwtAccessToken: string; page?: number; perPage?: number }>) {
   return useQuery({
     queryKey: ["customers", getProps?.page, getProps?.perPage],
     queryFn: async () =>
-      financeService.getCustomers(
-        getProps!.jwtAccessToken,
-        getProps?.page || 1,
-        getProps?.perPage || 20
-      ),
+      financeService.getCustomers(getProps?.page || 1, getProps?.perPage || 20),
     onSuccess: (data) => {
       toast({ title: "Customers fetched successfully" });
       onSuccess && onSuccess(data);
@@ -128,18 +125,15 @@ export function useGetCustomers({
       onError && onError(error);
     },
     refetchOnWindowFocus: false,
+    enabled: enabled,
   });
 }
 
 // Hook pour créer un consentement
-export function useCreateConsent({
-  getProps,
-  onSuccess,
-  onError,
-}: QueryProps<{ jwtAccessToken: string; payload: any }>) {
+export function useCreateConsent(onSuccess?: any, onError?: any) {
   return useMutation({
-    mutationFn: async () =>
-      financeService.createConsent(getProps!.jwtAccessToken, getProps!.payload),
+    mutationFn: async (p: CreateConsentPayload) =>
+      financeService.createConsent(p),
     onSuccess: (data) => {
       toast({ title: "Consent created successfully" });
       onSuccess && onSuccess(data);

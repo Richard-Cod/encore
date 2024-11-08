@@ -17,7 +17,7 @@ import {
 } from "./ui/table";
 import {
   GetProvidersResponse,
-  isBankStatusOk,
+  //   isBankStatusOk,
   ProviderStatus,
 } from "@/logic/services/financeService";
 import { SA } from "@/constants";
@@ -51,47 +51,20 @@ const BanksTable: React.FC<BanksTableProps> = ({
       </TableHeader>
       <TableBody>
         {providers.map((provider) => {
-          const isASupportedBank = isBankStatusOk(provider);
-          const trigger = (
-            <TableCell className="flex space-x-2 items-center cursor-pointer hover:underline">
-              <img
-                src={provider.logo}
-                alt={`${provider.englishName} logo`}
-                className="w-8 h-8 rounded-full"
-              />
-              <span>{provider.country.englishName}</span>
-            </TableCell>
-          );
+          //   const isASupportedBank = isBankStatusOk(provider);
+          //   const trigger = (
+          //     <TableCell className="flex space-x-2 items-center cursor-pointer hover:underline">
+          //       <img
+          //         src={provider.logo}
+          //         alt={`${provider.englishName} logo`}
+          //         className="w-8 h-8 rounded-full"
+          //       />
+          //       <span>{provider.englishName}</span>
+          //     </TableCell>
+          //   );
 
           return (
             <TableRow key={provider.id} className="hover:bg-gray-100">
-              {!isASupportedBank ? (
-                <ModalCmp
-                  Content={
-                    <div>
-                      <UploadFileComponent />
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Close</AlertDialogCancel>
-                        {/* <AlertDialogAction onClick={() => onOk()}>Continue</AlertDialogAction> */}
-                      </AlertDialogFooter>
-                    </div>
-                  }
-                  trigger={trigger}
-                />
-              ) : (
-                <TableCell
-                  onClick={() => handleSelectBank(provider)}
-                  className="flex space-x-2 items-center cursor-pointer hover:underline"
-                >
-                  <img
-                    src={provider.logo}
-                    alt={`${provider.englishName} logo`}
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <span>{provider.country.englishName}</span>
-                </TableCell>
-              )}
-
               <TableCell>{provider.country.iso3166Code} </TableCell>
               <TableCell>
                 {provider.address} - {country}
@@ -122,7 +95,7 @@ const BanksTable: React.FC<BanksTableProps> = ({
                           </span>
                         </TableCell> */}
 
-              {country == SA && (
+              {/* {country == SA && (
                 <TableCell>
                   <span
                     className={
@@ -134,7 +107,7 @@ const BanksTable: React.FC<BanksTableProps> = ({
                     {isASupportedBank ? "Yes" : "No"}
                   </span>
                 </TableCell>
-              )}
+              )} */}
             </TableRow>
           );
         })}
@@ -144,3 +117,29 @@ const BanksTable: React.FC<BanksTableProps> = ({
 };
 
 export default BanksTable;
+
+// {!isASupportedBank ? (
+//     <ModalCmp
+//       Content={
+//         <div>
+//           <UploadFileComponent />
+//           <AlertDialogFooter>
+//             <AlertDialogCancel>Close</AlertDialogCancel>
+//           </AlertDialogFooter>
+//         </div>
+//       }
+//       trigger={trigger}
+//     />
+//   ) : (
+//     <TableCell
+//       onClick={() => handleSelectBank(provider)}
+//       className="flex space-x-2 items-center cursor-pointer hover:underline"
+//     >
+//       <img
+//         src={provider.logo}
+//         alt={`${provider.englishName} logo`}
+//         className="w-8 h-8 rounded-full"
+//       />
+//       <span>{provider.englishName}</span>
+//     </TableCell>
+//   )}

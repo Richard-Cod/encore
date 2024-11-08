@@ -1,9 +1,14 @@
 // services/financeService.ts
+// companyName
+// bankName
+// transactions
+// email
+// accountList
 
 import apiClient from "@/app/axiosConst";
 import {
   AppConstants,
-  defaultBanksList,
+  saudi_defaultBanksList,
   getAccessTokenFront,
 } from "@/constants";
 import axios from "axios";
@@ -70,7 +75,7 @@ export interface CreateCustomerPayload {
   nationalId: string;
 }
 
-interface Customer {
+export interface Customer {
   id: string;
   type: string;
   email: string;
@@ -80,14 +85,14 @@ interface CreateCustomerResponse {
   data: Customer;
 }
 
-interface GetCustomersResponse {
+export interface GetCustomersResponse {
   data: Customer[];
   page: number;
   perPage: number;
   total: number;
 }
 
-interface CreateConsentPayload {
+export interface CreateConsentPayload {
   customerId: string;
   providerId: string;
   permissions: string[];
@@ -100,16 +105,56 @@ interface Consent {
   permissions: string[];
 }
 
-interface CreateConsentResponse {
-  data: Consent;
+export interface CreateConsentResponse {
+  data: {
+    // expiryDate: string; // ou Date si vous souhaitez convertir en objet Date lors de la récupération
+    // permissions: Permission[];
+    // statusHistory: StatusHistoryEntry[];
+    // connection: Connection;
+    id: string;
+    customerId: string;
+    scope: string;
+    createdAt: string; // ou Date
+    status: string;
+    authorizationLink: string;
+  };
 }
 
+// export interface CreateConsentResponse {
+//   data: Consent;
+// }
+
 // Fonction pour vérifier si un BankProvider a un statut "ok" dans la liste par défaut
-export function isBankStatusOk(provider: BankProvider): boolean {
-  const bankInDefaultList = defaultBanksList.find(
-    (defaultBank) => defaultBank.bank === provider.englishName
-  );
-  return bankInDefaultList?.status === "ok";
+// export function isBankStatusOk(provider: BankProvider): boolean {
+//   const bankInDefaultList = saudi_defaultBanksList.find(
+//     (saudi_defaultBanksList) =>
+//       saudi_defaultBanksList.bank === provider.englishName
+//   );
+//   return bankInDefaultList?.status === "ok";
+// }
+
+export function isBankStatusOkSaudi(
+  bankName: string,
+  providers: BankProvider[]
+): BankProvider | null {
+  const ourBank = providers.find((item) => {
+    const prev = bankName.replaceAll("Investment", "Investement");
+    const test = item.englishName == "Arab National Bank";
+    const secondTest = bankName === "Arab National Bank (ANB)";
+    if (test && secondTest) {
+      console.log(`Bank Name ${prev} and provider name - ${prev}`);
+      console.log("prev");
+      console.log(prev);
+    }
+    return prev.toLowerCase() == item.englishName.toLowerCase();
+  });
+
+  return ourBank || null;
+  // const bankInDefaultList = saudi_defaultBanksList.find(
+  //   (saudi_defaultBanksList) =>
+  //     saudi_defaultBanksList.bank === provider.englishName
+  // );
+  // return bankInDefaultList?.status === "ok";
 }
 
 // Service principal pour les requêtes
@@ -183,16 +228,15 @@ const financeService = {
 
   // 4. Get Customers
   async getCustomers(
-    jwtAccessToken: string,
     page: number = 1,
     perPage: number = 20
   ): Promise<GetCustomersResponse> {
-    const response = await apiClient.get<GetCustomersResponse>(
-      `/ais/Customer/List?page=${page}&perPage=${perPage}`,
+    const jwtAccessToken = getAccessTokenFront();
+    const response = await axios.post<GetCustomersResponse>(
+      "/api/finance/get-customers",
+      // `/ais/Customer/List?page=${page}&perPage=${perPage}`,
       {
-        headers: {
-          Authorization: `Bearer ${jwtAccessToken}`,
-        },
+        jwtAccessToken,
       }
     );
     return response.data;
@@ -200,17 +244,17 @@ const financeService = {
 
   // 6. Create Consent
   async createConsent(
-    jwtAccessToken: string,
     payload: CreateConsentPayload
   ): Promise<CreateConsentResponse> {
-    const response = await apiClient.post<CreateConsentResponse>(
-      "/ais/Consent/Create",
-      payload,
+    const jwtAccessToken = getAccessTokenFront();
+
+    const response = await axios.post<CreateConsentResponse>(
+      "/api/finance/create-consent",
+
+      // "/ais/Consent/Create",
       {
-        headers: {
-          Authorization: `Bearer ${jwtAccessToken}`,
-          "Content-Type": "application/json",
-        },
+        payload,
+        jwtAccessToken,
       }
     );
     return response.data;

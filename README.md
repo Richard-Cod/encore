@@ -1,9 +1,3 @@
-[X] - Créer un compte
-[X] - Se connecter
-[] - Ajouter son entreprise
-[] - Voir son entreprise
-[] - Editer son entreprise
-[] - Ajouter un produit
-[] - Voir un produit
-[] - Editer un produit
-[] - Supprimer un produit
+[X] - Un fichier qui contient PAYS , EMAIL , COMPANY , Category,SubCat,
+[X] - Un fichier qui contient liste des comptes
+[X] - Un fichier qui contient les transactions
