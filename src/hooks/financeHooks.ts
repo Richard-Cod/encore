@@ -46,7 +46,7 @@ export function useGenerateToken({ onSuccess, onError }: QueryProps<void>) {
       return financeService.generateToken();
     },
     onSuccess: (data) => {
-      toast({ title: "Token generated successfully" });
+      // toast({ title: "Token generated successfully" });
       onSuccess && onSuccess(data);
     },
     onError: (error: AxiosError) => {
@@ -71,7 +71,7 @@ export function useGetProviders({
     queryFn: async () =>
       financeService.getProviders(getProps?.countryCode || "SA"),
     onSuccess: (data) => {
-      toast({ title: "Providers fetched successfully" });
+      // toast({ title: "Providers fetched successfully" });
       onSuccess && onSuccess(data);
     },
     onError: (error: AxiosError) => {
@@ -90,7 +90,7 @@ export function useCreateCustomer(onSuccess?: any, onError?: any) {
     mutationFn: async (p: CreateCustomerPayload) =>
       financeService.createCustomer(p),
     onSuccess: (data) => {
-      toast({ title: "Customer created successfully" });
+      // toast({ title: "Customer created successfully" });
       onSuccess && onSuccess(data);
     },
     onError: (error: AxiosError) => {
@@ -104,7 +104,7 @@ export function useCreateCustomer(onSuccess?: any, onError?: any) {
         error.response?.status == 409 &&
         accountExistsError == "CUSTOMER_ALREADY_EXISTS"
       ) {
-        toast({ title: "Customer already exists" });
+        // toast({ title: "Customer already exists" });
 
         return;
       }
@@ -126,7 +126,7 @@ export function useGetCustomers({
     queryFn: async () =>
       financeService.getCustomers(getProps?.page || 1, getProps?.perPage || 20),
     onSuccess: (data) => {
-      toast({ title: "Customers fetched successfully" });
+      // toast({ title: "Customers fetched successfully" });
       onSuccess && onSuccess(data);
     },
     onError: (error: AxiosError) => {
@@ -144,7 +144,7 @@ export function useCreateConsent(onSuccess?: any, onError?: any) {
     mutationFn: async (p: CreateConsentPayload) =>
       financeService.createConsent(p),
     onSuccess: (data) => {
-      toast({ title: "Consent created successfully" });
+      // toast({ title: "Consent created successfully" });
       onSuccess && onSuccess(data);
     },
     onError: (error: AxiosError) => {
@@ -160,7 +160,7 @@ export function useListAccounts(onSuccess?: any, onError?: any) {
       financeService.listAccounts(p),
     onSuccess: (data) => {
       // toast({ title: "Consent created successfully" });
-      toast({ title: "Accounts fetched successfully" });
+      // toast({ title: "Accounts fetched successfully" });
       onSuccess && onSuccess(data);
     },
     onError: (error: AxiosError) => {
@@ -176,7 +176,7 @@ export function useListTransactions(onSuccess?: any, onError?: any) {
       financeService.listTransactions(p),
     onSuccess: (data) => {
       // toast({ title: "Consent created successfully" });
-      toast({ title: "Transactions fetched successfully" });
+      // toast({ title: "Transactions fetched successfully" });
       onSuccess && onSuccess(data);
     },
     onError: (error: AxiosError) => {
@@ -203,7 +203,7 @@ export function useUploadJson(onSuccess?: any, onError?: any) {
     },
     onSuccess: (data: any) => {
       // toast({ title: "Consent created successfully" });
-      toast({ title: "uploaded json successfully" });
+      // toast({ title: "uploaded json successfully" });
       onSuccess && onSuccess(data);
     },
     onError: (error: AxiosError) => {
@@ -220,7 +220,7 @@ export function useUploadPdf(onSuccess?: any, onError?: any) {
     },
     onSuccess: (data: any) => {
       // toast({ title: "Consent created successfully" });
-      toast({ title: "uploaded Pdf successfully" });
+      // toast({ title: "uploaded Pdf successfully" });
       onSuccess && onSuccess(data);
     },
     onError: (error: AxiosError) => {

@@ -65,8 +65,8 @@ interface LoginPayload {
 }
 
 const countries = [
-  { code: UAE, name: "United Arab Emirates", flag: "🇦🇪" },
-  { code: SA, name: "Saudi Arabia", flag: "🇸🇦" },
+  { code: UAE, name: "United Arab Emirates", flag: "/uae-flag.webp" },
+  { code: SA, name: "Saudi Arabia", flag: "/saudi-flag.webp" },
 ];
 
 const initialValues: LoginPayload = {
@@ -385,7 +385,7 @@ const LoginForm = () => {
     error,
   } = useGenerateToken({
     onSuccess: () => {
-      toast({ title: "refetch providers" });
+      // toast({ title: "refetch providers" });
       refetchProviders();
     },
     onError: () => {},
@@ -528,13 +528,13 @@ const LoginForm = () => {
           {!isFormSubmitted && (
             <form onSubmit={formik.handleSubmit} className="w-full ">
               <div className="flex flex-col w-full gap-y-4">
-                <Button
+                {/* <Button
                   onClick={() => {
                     handleUploadOnAzure();
                   }}
                 >
                   Click to upload on Azure
-                </Button>
+                </Button> */}
                 {/* <Button
                   onClick={() => {
                     listUserAccounts({
@@ -563,9 +563,16 @@ const LoginForm = () => {
                       <SelectGroup>
                         {countries.map((country) => {
                           return (
-                            <SelectItem
-                              value={country.code}
-                            >{`${country.flag} ${country.name}`}</SelectItem>
+                            <SelectItem className="" value={country.code}>
+                              <div className="flex text-xs space-x-2">
+                                <img
+                                  className="w-4 h-4 "
+                                  src={country.flag}
+                                  alt=""
+                                />
+                                <p>{`${country.name}`}</p>
+                              </div>
+                            </SelectItem>
                           );
                         })}
                       </SelectGroup>
