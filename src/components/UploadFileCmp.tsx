@@ -77,7 +77,7 @@ export default function UploadFileComponent({
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4 text-center">
-        Upload Bank Statements
+        Upload Bank Statements {containerName}
       </h2>
       <div
         {...getRootProps()}

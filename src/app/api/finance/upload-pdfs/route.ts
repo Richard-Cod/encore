@@ -10,6 +10,7 @@ export async function POST(req: Request) {
     const file = formData.get("file") as File;
     const directoryName = formData.get("directoryName");
     const containerName = formData.get("containerName");
+    console.log("containerName ", containerName);
 
     console.log("file ", file);
 

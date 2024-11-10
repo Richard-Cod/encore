@@ -1,5 +1,3 @@
-interface ENVS {}
-
 const account_name = "orbiiprodfinance";
 const container_name = "ksaopenbankingdev";
 const token =
