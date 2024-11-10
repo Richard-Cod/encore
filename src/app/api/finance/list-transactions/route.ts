@@ -23,9 +23,8 @@ export async function POST(req: Request, res: Response) {
     return new Response("Missing jwtAccessToken", {
       status: 400,
     });
-
     // return NextResponse.json({ message: "Missing jwtAccessToken" });
-
+    // github-personal
     // return res.status(400).json({ message: "Missing jwtAccessToken" });
   }
 
