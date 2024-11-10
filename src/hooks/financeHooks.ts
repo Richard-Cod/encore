@@ -277,7 +277,7 @@ async function handleApiError(error: AxiosError) {
     try {
       const new_token = await financeService.generateToken();
       setCookie(AppConstants.access_token_key, new_token.access_token);
-      //   window.location.reload();
+      window.location.reload();
       console.log("new token set ", new_token.access_token);
     } catch (error) {}
     // toast({

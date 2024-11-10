@@ -40,6 +40,7 @@ import {
   CreateConsentPayload,
   CreateConsentResponse,
   CreateCustomerPayload,
+  CreateCustomerResponse,
   Customer,
   GetCustomersResponse,
   isBankStatusOkSaudi,
@@ -263,7 +264,11 @@ const LoginForm = () => {
   });
 
   const { mutate: createCustomer, isLoading: isCreatingCustomer } =
-    useCreateCustomer();
+    useCreateCustomer((data: CreateCustomerResponse) => {
+      console.log("create custom er data");
+      console.log(data);
+      setexistingUser(data.data);
+    });
 
   const [canFetchAccounts, setcanFetchAccounts] = useState(false);
 
@@ -425,14 +430,17 @@ const LoginForm = () => {
       );
       console.log("userExist");
       console.log(userExist);
-      if (userExist) setexistingUser(userExist);
+      if (userExist) {
+        setexistingUser(userExist);
+        return;
+      }
 
-      // const p: CreateCustomerPayload = {
-      //   type: "Business",
-      //   email: formik.values.email,
-      //   nationalId: "ffffffffff",
-      // };
-      // createCustomer(p);
+      const p: CreateCustomerPayload = {
+        type: "Business",
+        email: formik.values.email,
+        nationalId: "ffffffffff",
+      };
+      createCustomer(p);
     },
     // enabled: false,
     enabled: isFormSubmitted,
@@ -524,7 +532,8 @@ const LoginForm = () => {
       isCreatingConsent ? (
         <p>Loading...</p>
       ) : (
-        <div className="min-w-[500px]">
+        <div className="md:min-w-[500px]">
+          {/* {providers ? "e" : "def"} */}
           {!isFormSubmitted && (
             <form onSubmit={formik.handleSubmit} className="w-full ">
               <div className="flex flex-col w-full gap-y-4">
@@ -636,34 +645,37 @@ const LoginForm = () => {
             </form>
           )}
 
-          {providers && isFormSubmitted && formik.values.country == SA && (
-            <div>
-              <h1>Open Banking - Bank Coverage {currentConsentId} </h1>
-              {/* <BanksTable
+          {providers &&
+            existingUser &&
+            isFormSubmitted &&
+            formik.values.country == SA && (
+              <div>
+                {/* <h1>Open Banking - Bank Coverage {currentConsentId} </h1> */}
+                {/* <BanksTable
                 handleSelectBank={handleSelectBank}
                 providers={defaultBanksList}
               /> */}
 
-              <DefaultTable
-                companyName={formik.values.companyName}
-                // directoryName={formatDirectoryName(
-                //   formik.values.companyName,
-                //   selectedBank?.englishName!
-                // )}
-                handleSelectBankSA={handleSelectBankSA}
-                providers={providers.data}
-              />
-              {/* <BanksTable
+                <DefaultTable
+                  companyName={formik.values.companyName}
+                  // directoryName={formatDirectoryName(
+                  //   formik.values.companyName,
+                  //   selectedBank?.englishName!
+                  // )}
+                  handleSelectBankSA={handleSelectBankSA}
+                  providers={providers.data}
+                />
+                {/* <BanksTable
                 country={formik.values.country}
                 handleSelectBank={handleSelectBank}
                 providers={providers.data}
               /> */}
-            </div>
-          )}
+              </div>
+            )}
 
           {providers && isFormSubmitted && formik.values.country == UAE && (
             <div>
-              <h1>Open Banking - Bank Coverage {currentConsentId} </h1>
+              {/* <h1>Open Banking - Bank Coverage {currentConsentId} </h1> */}
               {/* <BanksTable
                 handleSelectBank={handleSelectBank}
                 providers={defaultBanksList}

@@ -81,7 +81,7 @@ export interface Customer {
   email: string;
 }
 
-interface CreateCustomerResponse {
+export interface CreateCustomerResponse {
   data: Customer;
 }
 
