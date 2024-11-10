@@ -19,7 +19,7 @@ const ROUTES = {
 
 const AppConstants = {
   logo: "/dealitlogo.png",
-  project_name: "FinanceApp",
+  project_name: "Orbii",
   contact_email: "ouaga.marketplace@gmail.com",
   access_token_key: "access_token_key",
   refresh_token_key: "refresh_token_key",
@@ -62,6 +62,38 @@ export const SA = "SA";
 //     category_id: 1,
 //   },
 // ];
+
+type BankUAE = {
+  name: string;
+  isActive: boolean;
+};
+
+export const defaultUAEbanks: BankUAE[] = [
+  { name: "Emirates NBD", isActive: true },
+  { name: "First Abu Dhabi Bank", isActive: false },
+  { name: "Abu Dhabi Islamic Bank (ADIB)", isActive: false },
+  { name: "Emirates Investment Bank", isActive: false },
+  { name: "HSBC Bank Middle East", isActive: false },
+  { name: "Arab Bank PLC", isActive: false },
+  { name: "Citibank NA", isActive: false },
+  { name: "Al Ahli Bank of Kuwait", isActive: false },
+  { name: "Mashreq Bank", isActive: false },
+  { name: "National Bank of Fujairah", isActive: false },
+  { name: "Zand Bank", isActive: false },
+  { name: "Emirates Islamic Bank", isActive: false },
+  { name: "Commercial Bank of Dubai", isActive: false },
+  { name: "ADCB", isActive: true },
+  { name: "Abu Dhabi Commercial Bank", isActive: false },
+  { name: "Dubai Islamic Bank", isActive: false },
+  { name: "RAKBANK", isActive: false },
+  { name: "Standard Chartered Bank", isActive: false },
+  { name: "Al Hilal Bank", isActive: false },
+  { name: "Ajman Bank", isActive: false },
+  { name: "Arab African International Bank", isActive: false },
+  { name: "Abu Dhabi Islamic Bank", isActive: false },
+  { name: "Al khaliji France", isActive: false },
+  { name: "Wio Bank", isActive: false },
+];
 
 export const saudi_defaultBanksList = [
   //

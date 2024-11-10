@@ -50,7 +50,7 @@ export function SelectCategory({
           <span className="capitalize">
             {selectedCategory?.name
               ? `${selectedCategory.name}`
-              : "Sélectionner un Category..."}
+              : "Select a category..."}
           </span>
 
           {/* {selectedValues.length > 0

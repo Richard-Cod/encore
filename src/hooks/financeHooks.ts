@@ -5,10 +5,19 @@ import { useRouter } from "next/router";
 import financeService, {
   CreateConsentPayload,
   CreateCustomerPayload,
+  ListAccountsPayload,
+  ListTransactionsPayload,
 } from "@/logic/services/financeService";
 import { toast } from "./use-toast";
 import { getCookie, setCookie } from "cookies-next";
 import { AppConstants } from "@/constants";
+// import AzureUploadService from "@/logic/services/azureUploadService";
+import { APP_ENVS } from "@/config/envs";
+import {
+  uploadJsonToAzure,
+  uploadPdfToAzure,
+  UploadProps,
+} from "@/logic/services/azureUploadService";
 
 // Types pour les props des hooks (peuvent être adaptés selon les besoins)
 interface QueryProps<T> {
@@ -145,25 +154,12 @@ export function useCreateConsent(onSuccess?: any, onError?: any) {
   });
 }
 
-// Hook pour lister les comptes
-export function useListAccounts({
-  getProps,
-  onSuccess,
-  onError,
-}: QueryProps<{
-  jwtAccessToken: string;
-  customerId: string;
-  providerId: string;
-}>) {
-  return useQuery({
-    queryKey: ["accounts", getProps?.customerId, getProps?.providerId],
-    queryFn: async () =>
-      financeService.listAccounts(
-        getProps!.jwtAccessToken,
-        getProps!.customerId,
-        getProps!.providerId
-      ),
+export function useListAccounts(onSuccess?: any, onError?: any) {
+  return useMutation({
+    mutationFn: async (p: ListAccountsPayload) =>
+      financeService.listAccounts(p),
     onSuccess: (data) => {
+      // toast({ title: "Consent created successfully" });
       toast({ title: "Accounts fetched successfully" });
       onSuccess && onSuccess(data);
     },
@@ -171,9 +167,108 @@ export function useListAccounts({
       handleApiError(error);
       onError && onError(error);
     },
-    refetchOnWindowFocus: false,
   });
 }
+
+export function useListTransactions(onSuccess?: any, onError?: any) {
+  return useMutation({
+    mutationFn: async (p: ListTransactionsPayload) =>
+      financeService.listTransactions(p),
+    onSuccess: (data) => {
+      // toast({ title: "Consent created successfully" });
+      toast({ title: "Transactions fetched successfully" });
+      onSuccess && onSuccess(data);
+    },
+    onError: (error: AxiosError) => {
+      handleApiError(error);
+      onError && onError(error);
+    },
+  });
+}
+
+// Configuration Azure
+// const connectionString = APP_ENVS.con;
+const containerName = APP_ENVS.CONTAINER_NAME;
+
+// Instance du service AzureUploadService
+
+// const azureUploadServiceJSON = new AzureUploadService(
+//   APP_ENVS.credsForJson.container_name!
+// );
+
+export function useUploadJson(onSuccess?: any, onError?: any) {
+  return useMutation({
+    mutationFn: async (args: UploadProps) => {
+      return uploadJsonToAzure(args);
+    },
+    onSuccess: (data: any) => {
+      // toast({ title: "Consent created successfully" });
+      toast({ title: "uploaded json successfully" });
+      onSuccess && onSuccess(data);
+    },
+    onError: (error: AxiosError) => {
+      handleApiError(error);
+      onError && onError(error);
+    },
+  });
+}
+
+export function useUploadPdf(onSuccess?: any, onError?: any) {
+  return useMutation({
+    mutationFn: async (args: UploadProps) => {
+      return uploadPdfToAzure(args);
+    },
+    onSuccess: (data: any) => {
+      // toast({ title: "Consent created successfully" });
+      toast({ title: "uploaded Pdf successfully" });
+      onSuccess && onSuccess(data);
+    },
+    onError: (error: AxiosError) => {
+      handleApiError(error);
+      onError && onError(error);
+    },
+  });
+}
+
+// const azureUploadServicePDF = new AzureUploadService(APP_ENVS.CONTAINER_NAME!);
+
+// export function useUploadOnAzure(onSuccess?: any, onError?: any) {
+//   return useMutation({
+//     mutationFn: async (file: File) => {
+//       const filePath = `uploads/${new Date().toISOString()}_${file.name}`;
+//       return azureUploadServicePDF.uploadFile(file, filePath);
+//     },
+//     onSuccess: (data) => {
+//       // toast({ title: "Consent created successfully" });
+//       toast({ title: "pdf uploaded successfully" });
+//       onSuccess && onSuccess(data);
+//     },
+//     onError: (error: AxiosError) => {
+//       handleApiError(error);
+//       onError && onError(error);
+//     },
+//   });
+// }
+
+// Hook pour lister les comptes
+// export function useListAccounts(onSuccess?: any, onError?: any,) {
+
+//   return useQuery({
+//     queryKey: ["accounts", "list"],
+//     queryFn: async (args : {item : string}) =>
+//       ,
+//     onSuccess: (data) => {
+//       toast({ title: "Accounts fetched successfully" });
+//       onSuccess && onSuccess(data);
+//     },
+//     onError: (error: AxiosError) => {
+//       handleApiError(error);
+//       onError && onError(error);
+//     },
+//     refetchOnWindowFocus: false,
+//     enabled,
+//   });
+// }
 
 // Fonction utilitaire pour gérer les erreurs
 async function handleApiError(error: AxiosError) {

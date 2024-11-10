@@ -10,7 +10,7 @@ export default function Navbar() {
         <Link href="/" className="text-2xl font-bold">
           {AppConstants.project_name}
         </Link>
-        <div className="space-x-4">
+        {/* <div className="space-x-4">
           <Button variant="ghost" asChild>
             <Link href="/dashboard">Dashboard</Link>
           </Button>
@@ -20,7 +20,7 @@ export default function Navbar() {
           <Button variant="ghost" asChild>
             <Link href="/settings">Settings</Link>
           </Button>
-        </div>
+        </div> */}
       </div>
     </nav>
   );

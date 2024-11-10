@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useMutation } from "react-query";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/π>";
 import AppFormikInput from "@/components/self/AppFormikInput";
 import {
   Select,
@@ -21,6 +21,10 @@ import {
   useGenerateToken,
   useGetCustomers,
   useGetProviders,
+  useListAccounts,
+  useListTransactions,
+  useUploadJson,
+  // useUploadOnAzure,
 } from "@/hooks/financeHooks";
 import BanksTable from "../BanksTable";
 import {
@@ -39,11 +43,20 @@ import {
   Customer,
   GetCustomersResponse,
   isBankStatusOkSaudi,
+  ListAccountsResult,
+  ListTransactionsPayload,
   //   isBankStatusOk,
 } from "@/logic/services/financeService";
 import DefaultTable from "../DefaultTable";
 import { SelectCategory } from "../SelectCategory";
 import { SelectSubCategory } from "../SelectSubCategory";
+import io, { Socket } from "socket.io-client";
+import { Button } from "../ui/button";
+import {
+  formatDirectoryName,
+  UploadProps,
+} from "@/logic/services/azureUploadService";
+import UAETable from "../UAETable";
 
 interface LoginPayload {
   country: string;
@@ -69,20 +82,301 @@ const loginSchema = Yup.object().shape({
   companyName: Yup.string().required("Company name is required"),
 });
 
+let socket: Socket;
+
 const LoginForm = () => {
+  const [currentConsentId, setcurrentConsentId] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    // Connect to the Socket.IO server
+    const socket = io("http://localhost:8000"); // Socket.IO server URL
+
+    // Get the socket ID once the client is connected
+    socket.on("connect", () => {
+      // setSocketId(socket.id); // Store the socket ID in the state
+      console.log("Connected to server with socket ID:", socket.id);
+    });
+
+    // Listen for 'broadcast' events from the server
+    socket.on("broadcast", (data) => {
+      console.log("Received broadcast:", data);
+
+      const eventName = data.event;
+      const eventConsentId = data.consentId;
+      // const ourConsentId = currentConsentId;
+
+      console.log(`${eventName} - ${eventConsentId} - ${currentConsentId}`);
+      // const our
+      if (
+        eventConsentId == currentConsentId &&
+        eventName == "CONSENT_AUTHORIZED"
+      ) {
+        // alert("on peut continuer le flow");
+        // setcanFetchAccounts(true);
+
+        if (!existingUser || !selectedBank) return;
+
+        setTimeout(() => {
+          listUserAccounts({
+            customerId: existingUser.id,
+            providerId: selectedBank.id,
+            consentId: currentConsentId,
+          });
+        }, 10000);
+      }
+    });
+
+    // Handle errors
+    socket.on("connect_error", (error) => {
+      console.error("Socket connection error:", error);
+    });
+
+    // Cleanup on unmount
+    return () => {
+      socket.disconnect(); // Disconnect the socket when the component unmounts
+    };
+  }, [currentConsentId]);
+
+  // useEffect(() => {
+  //   socket = io("http://localhost:8000");
+  //   console.log("socket created");
+
+  //   socket.on("hello", (data) => {
+  //     console.log("Message from server:", data);
+  //   });
+
+  //   socket.emit("messageFromClient", { message: "Hello, server!" });
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
+
+  const [selectedBank, setselectedBank] = useState<BankProvider | null>(null);
   const [existingUser, setexistingUser] = useState<Customer | null>();
   const [isFormSubmitted, setisFormSubmitted] = useState(false);
   //   const [canFetchProviders, setcanFetchProviders] = useState(false);
 
-  const { mutate: createConsent, isLoading: isCreatingConsent } =
-    useCreateConsent((result: CreateConsentResponse) => {
-      console.log("consent created successfullu");
-      console.log(result);
-      window.open(result.data.authorizationLink, "_blank");
-    });
+  const [isUploadingFilesToAzure, setisUploadingFilesToAzure] = useState(false);
+
+  const [allAccountsJson, setallAccountsJson] =
+    useState<ListAccountsResult | null>(null);
+  // const [alltransactionssJson, setalltransactionssJson] = useState(null)
+
+  const {
+    mutate: uploadJsonToAzure,
+    isLoading: isUploadingOnAzure,
+    data: azureUploadData,
+  } = useUploadJson(
+    (data: any) => {
+      // console.log("upload success");
+      console.log(data);
+    },
+    (error: any) => {
+      console.log("error on uploading");
+      console.log(error);
+    }
+  );
+
+  const handleUploadOnAzure = () => {
+    const d = {
+      data: [
+        {
+          id: "2aadc657-7972-4dd8-9f16-9ee04dfe01f3",
+          currency: {
+            id: "02d3bac3-eb2b-4c25-a476-9e7b0e411bf4",
+            englishName: "Saudi Arabia Riyal",
+            arabicName: "ريال سعودي",
+            iso4117Code: "SAR",
+            iso4117Number: "682",
+          },
+          accounts: [
+            {
+              id: "0480a944-bf0d-4827-84d7-26edb81d56cb",
+              scheme: "KSAOB.IBAN",
+              identification: "SA6305000068203856266423",
+              name: "Abdulaziz Abusaleh",
+            },
+          ],
+          status: "Active",
+          statusUpdatedDateTime: "2024-04-24T13:48:48.949+00:00",
+          type: "KSAOB.Retail",
+          subType: "CurrentAccount",
+          description: "Abdulaziz Abusaleh",
+          openingDate: "2024-01-25T13:48:48.949+00:00",
+          maturityDate: "2024-04-24T13:48:48.949+00:00",
+        },
+        {
+          id: "dfc82a96-9429-49a2-9f6d-c6c4152f87dd",
+          currency: {
+            id: "02d3bac3-eb2b-4c25-a476-9e7b0e411bf4",
+            englishName: "Saudi Arabia Riyal",
+            arabicName: "ريال سعودي",
+            iso4117Code: "SAR",
+            iso4117Number: "682",
+          },
+          accounts: [
+            {
+              id: "bc4bb4ce-84fd-4a52-a594-8932a2a52b48",
+              scheme: "KSAOB.IBAN",
+              identification: "SA1905000000203000001996",
+              name: "Abdulaziz Abusaleh",
+            },
+          ],
+          status: "Active",
+          statusUpdatedDateTime: "2024-04-24T13:52:57.608+00:00",
+          type: "KSAOB.Retail",
+          subType: "CurrentAccount",
+          description: "Abdulaziz Abusaleh",
+          openingDate: "2024-01-25T13:52:57.607+00:00",
+          maturityDate: "2024-04-24T13:52:57.607+00:00",
+        },
+      ],
+      meta: {
+        currentPageNumber: "1",
+        pageSize: "20",
+        totalNumberOfPages: "1",
+      },
+    };
+
+    const accountsJson: UploadProps = {
+      directoryName: "companyFormatted",
+      fileName: "list-of-accounts.json",
+      data: {
+        value: d.data[0],
+        // value: d.data,
+      },
+    };
+    uploadJsonToAzure(accountsJson);
+  };
+
+  const {
+    mutate: createConsent,
+    isLoading: isCreatingConsent,
+    data: consentCreatedData,
+  } = useCreateConsent((result: CreateConsentResponse) => {
+    console.log("consent created successfullu");
+    console.log(result);
+    setcurrentConsentId(result.data.id);
+    window.open(result.data.authorizationLink, "_blank");
+  });
 
   const { mutate: createCustomer, isLoading: isCreatingCustomer } =
     useCreateCustomer();
+
+  const [canFetchAccounts, setcanFetchAccounts] = useState(false);
+
+  const {
+    mutate: listUserTransactions,
+    data: list_of_Transactions,
+    isLoading: isGettingTransactions,
+    isError: isGetTransactionsError,
+    error: getTransactionsError,
+  } = useListTransactions(
+    (result: any) => {
+      console.log("all transactions ", result);
+
+      const data = {
+        hello: "world",
+        name: "richard",
+        test: true,
+      };
+      const filePath = `uploads/${new Date().toISOString()}_${"test"}`;
+      const companyFormatted = formatDirectoryName(
+        formik.values.companyName,
+        selectedBank?.englishName!
+      );
+
+      console.log("companyFormatted ", companyFormatted);
+
+      //     [X] - Un fichier qui contient PAYS , EMAIL , COMPANY , Category,SubCat, data.json
+      // [X] - Un fichier qui contient liste des comptes list-of-accounts.json
+      // [X] - Un fichier qui contient les transactions transactions.json
+
+      setisUploadingFilesToAzure(true);
+      const dataJson: UploadProps = {
+        directoryName: companyFormatted,
+        fileName: "data.json",
+        data: {
+          country: formik.values.country,
+          email: formik.values.email,
+          category: selectedCategory,
+          subCategory: selectedSubCategory,
+        },
+      };
+      uploadJsonToAzure(dataJson);
+
+      console.log("before ", list_of_accounts);
+
+      console.log("liste des comptes ");
+      console.log(allAccountsJson);
+
+      console.log("liste des transactions ");
+      console.log(result);
+
+      const accountsJson: UploadProps = {
+        directoryName: companyFormatted,
+        fileName: "list-of-accounts.json",
+        data: {
+          ...allAccountsJson?.data,
+        },
+      };
+      uploadJsonToAzure(accountsJson);
+
+      const transactionsJson: UploadProps = {
+        directoryName: companyFormatted,
+        fileName: "transactions.json",
+        data: {
+          list_of_Transactions: result,
+        },
+      };
+      uploadJsonToAzure(transactionsJson);
+    },
+    () => {}
+  );
+
+  const {
+    mutate: listUserAccounts,
+    data: list_of_accounts,
+    isLoading: isGettingAccounts,
+    isError: isGetAccountsError,
+    error: getAccountsError,
+  } = useListAccounts(
+    (result: ListAccountsResult) => {
+      console.log("useListAccounts");
+      console.log(result);
+
+      setallAccountsJson(result);
+
+      if (result.data.length == 0) {
+        toast({ title: "No account found", variant: "destructive" });
+        return;
+      }
+
+      // customerId: "e98f2c04-4de4-4e3c-af24-7e73eb9d8c35",
+      // providerId: "0aaed690-3db5-4e3b-9a87-1f4955173715",
+      // consentId: "baade0d3-2acd-49b0-b94c-d4e44c231769",
+
+      // const p: ListTransactionsPayload = {
+      //   consentId: "baade0d3-2acd-49b0-b94c-d4e44c231769",
+      //   accountIds: [
+      //     "66a112e9-ed2e-4b85-86b4-2f36797bd060",
+      //     "cc0553eb-a718-4445-bfbf-1dcb095639fb",
+      //   ],
+      // };
+
+      const p: ListTransactionsPayload = {
+        consentId: currentConsentId,
+        accountIds: result.data.map((val) => val.id),
+      };
+
+      setTimeout(() => {
+        listUserTransactions(p);
+      }, 20000);
+    },
+    () => {}
+  );
 
   const {
     data: generated_token,
@@ -155,37 +449,38 @@ const LoginForm = () => {
     },
   });
 
-  const handleSelectBank = (bank: BankProvider) => {
-    console.log("bank");
-    console.log(bank);
-    console.log(existingUser);
-    if (formik.values.country == SA) {
-      if (existingUser) {
-        const p: CreateConsentPayload = {
-          customerId: existingUser.id,
-          providerId: bank.id,
-          permissions: [],
-        };
-        createConsent(p);
-        return;
-      }
+  // const handleSelectBank = (bank: BankProvider) => {
+  //   console.log("bank");
+  //   console.log(bank);
+  //   console.log(existingUser);
+  //   if (formik.values.country == SA) {
+  //     if (existingUser) {
+  //       const p: CreateConsentPayload = {
+  //         customerId: existingUser.id,
+  //         providerId: bank.id,
+  //         permissions: [],
+  //       };
+  //       createConsent(p);
+  //       return;
+  //     }
 
-      //   const isBankSupported = isBankStatusOk(bank);
-      //   console.log("isBankSupported ", isBankSupported);
-      return;
-    }
+  //     //   const isBankSupported = isBankStatusOk(bank);
+  //     //   console.log("isBankSupported ", isBankSupported);
+  //     return;
+  //   }
 
-    // const p: CreateCustomerPayload = {
-    //   type: "Business",
-    //   email: "richard.bathiebo.9@gmail.com",
-    //   nationalId: "ffffffffff",
-    // };
-    // createCustomer(p);
-  };
+  //   // const p: CreateCustomerPayload = {
+  //   //   type: "Business",
+  //   //   email: "richard.bathiebo.9@gmail.com",
+  //   //   nationalId: "ffffffffff",
+  //   // };
+  //   // createCustomer(p);
+  // };
 
   const handleSelectBankSA = (bank: BankProvider) => {
     console.log("bank ", bank);
     console.log("existingUser ", existingUser);
+    setselectedBank(bank);
     if (existingUser) {
       const p: CreateConsentPayload = {
         customerId: existingUser.id,
@@ -209,12 +504,14 @@ const LoginForm = () => {
       return;
     }
   };
+
   const [selectedCategory, setselectedCategory] = useState<
     (typeof defaultCategories)[0] | null
   >();
   const [selectedSubCategory, setselectedSubCategory] = useState<
     (typeof defaultSubCategories)[0] | null
   >();
+
   return (
     <div
       className=" w-full flex flex-col mx-auto items-center"
@@ -231,6 +528,26 @@ const LoginForm = () => {
           {!isFormSubmitted && (
             <form onSubmit={formik.handleSubmit} className="w-full ">
               <div className="flex flex-col w-full gap-y-4">
+                <Button
+                  onClick={() => {
+                    handleUploadOnAzure();
+                  }}
+                >
+                  Click to upload on Azure
+                </Button>
+                {/* <Button
+                  onClick={() => {
+                    listUserAccounts({
+                      // customerId: "3ceb7ec7-6717-40b5-ba26-01bc258c3e73",
+                      customerId: "e98f2c04-4de4-4e3c-af24-7e73eb9d8c35",
+                      providerId: "0aaed690-3db5-4e3b-9a87-1f4955173715",
+                      consentId: "baade0d3-2acd-49b0-b94c-d4e44c231769",
+                      // consentId: "98cafd06-51b5-4a24-b5d4-d4169ed1875c",
+                    });
+                  }}
+                >
+                  CLICK to list accounts
+                </Button> */}
                 <div>
                   <Select
                     value={formik.values.country}
@@ -314,15 +631,45 @@ const LoginForm = () => {
 
           {providers && isFormSubmitted && formik.values.country == SA && (
             <div>
-              <h1>Open Banking - Bank Coverage</h1>
+              <h1>Open Banking - Bank Coverage {currentConsentId} </h1>
               {/* <BanksTable
                 handleSelectBank={handleSelectBank}
                 providers={defaultBanksList}
               /> */}
 
               <DefaultTable
+                companyName={formik.values.companyName}
+                // directoryName={formatDirectoryName(
+                //   formik.values.companyName,
+                //   selectedBank?.englishName!
+                // )}
                 handleSelectBankSA={handleSelectBankSA}
                 providers={providers.data}
+              />
+              {/* <BanksTable
+                country={formik.values.country}
+                handleSelectBank={handleSelectBank}
+                providers={providers.data}
+              /> */}
+            </div>
+          )}
+
+          {providers && isFormSubmitted && formik.values.country == UAE && (
+            <div>
+              <h1>Open Banking - Bank Coverage {currentConsentId} </h1>
+              {/* <BanksTable
+                handleSelectBank={handleSelectBank}
+                providers={defaultBanksList}
+              /> */}
+
+              <UAETable
+                email={formik.values.email}
+                companyName={formik.values.companyName}
+                // directoryName={formatDirectoryName(
+                //   formik.values.companyName,
+                //   selectedBank?.englishName!
+                // )}
+                handleSelectBankSA={handleSelectBankSA}
               />
               {/* <BanksTable
                 country={formik.values.country}

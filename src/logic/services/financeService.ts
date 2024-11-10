@@ -133,6 +133,40 @@ export interface CreateConsentResponse {
 //   return bankInDefaultList?.status === "ok";
 // }
 
+interface Account {
+  id: string;
+  scheme: string;
+  identification: string;
+  name: string;
+}
+
+interface DataItem {
+  id: string;
+  accounts: Account[];
+  status: string;
+  statusUpdatedDateTime: string;
+  type: string;
+  subType: string;
+  description: string;
+  openingDate: string;
+  maturityDate: string;
+}
+
+export interface ListAccountsResult {
+  data: DataItem[];
+}
+
+export interface ListAccountsPayload {
+  customerId: string;
+  providerId: string;
+  consentId: string;
+}
+
+export interface ListTransactionsPayload {
+  consentId: string;
+  accountIds: string[];
+}
+
 export function isBankStatusOkSaudi(
   bankName: string,
   providers: BankProvider[]
@@ -261,19 +295,49 @@ const financeService = {
   },
 
   // 7. List Accounts
-  async listAccounts(
-    jwtAccessToken: string,
-    customerId: string,
-    providerId: string
-  ): Promise<any> {
-    const response = await apiClient.get(
-      `/ais/Account/List?customerId=${customerId}&providerId=${providerId}`,
+  async listAccounts(p: ListAccountsPayload): Promise<any> {
+    const jwtAccessToken = getAccessTokenFront();
+
+    const response = await axios.post<ListAccountsResult>(
+      "/api/finance/list-accounts",
+      // "/ais/Consent/Create",
       {
-        headers: {
-          Authorization: `Bearer ${jwtAccessToken}`,
-        },
+        payload: p,
+        jwtAccessToken,
       }
     );
+
+    // const response = await apiClient.get(
+    //   `/ais/Account/List?customerId=${customerId}&providerId=${providerId}`,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${jwtAccessToken}`,
+    //     },
+    //   }
+    // );
+    return response.data;
+  },
+
+  async listTransactions(p: ListTransactionsPayload): Promise<any> {
+    const jwtAccessToken = getAccessTokenFront();
+
+    const response = await axios.post<ListAccountsResult>(
+      "/api/finance/list-transactions",
+      // "/ais/Consent/Create",
+      {
+        payload: p,
+        jwtAccessToken,
+      }
+    );
+
+    // const response = await apiClient.get(
+    //   `/ais/Account/List?customerId=${customerId}&providerId=${providerId}`,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${jwtAccessToken}`,
+    //     },
+    //   }
+    // );
     return response.data;
   },
 };

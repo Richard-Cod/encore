@@ -27,6 +27,8 @@ import { SA, saudi_defaultBanksList } from "@/constants";
 import { ModalCmp } from "./ModalCmp";
 import UploadFileComponent from "./UploadFileCmp";
 import { AlertDialogCancel, AlertDialogFooter } from "./ui/alert-dialog";
+import { formatDirectoryName } from "@/logic/services/azureUploadService";
+import { APP_ENVS } from "@/config/envs";
 
 // interface BanksTableProps {
 //   providers: GetProvidersResponse["data"];
@@ -35,11 +37,13 @@ import { AlertDialogCancel, AlertDialogFooter } from "./ui/alert-dialog";
 // }
 
 function DefaultTable({
+  companyName,
   providers,
   handleSelectBankSA,
 }: {
   providers: BankProvider[];
   handleSelectBankSA: any;
+  companyName: string;
 }) {
   const data = saudi_defaultBanksList;
 
@@ -72,7 +76,13 @@ function DefaultTable({
                   <ModalCmp
                     Content={
                       <div>
-                        <UploadFileComponent />
+                        <UploadFileComponent
+                          containerName={APP_ENVS.CONTAINER_NAME!}
+                          directoryName={formatDirectoryName(
+                            companyName,
+                            provider.bank
+                          )}
+                        />
                         <AlertDialogFooter>
                           <AlertDialogCancel>Close</AlertDialogCancel>
                         </AlertDialogFooter>
