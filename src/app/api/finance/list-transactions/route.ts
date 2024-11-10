@@ -16,7 +16,6 @@ export async function POST(req: Request, res: Response) {
 
   const jwtAccessToken = body.jwtAccessToken;
   const payload = body.payload;
-
   // const accessToken = req.cookies.get(AppConstants.access_token_key)?.value
 
   if (!jwtAccessToken) {
