@@ -281,7 +281,7 @@ export default function UploadFileComponent({
             </div>
             <Progress value={progress} className="mt-2" />
             <p className="text-xs text-gray-500 mt-1">
-              {status === "uploading" && `Uploading: ${progress}%`}
+              {status === "uploading" && `Uploading : ${progress}%`}
               {status === "success" && "Upload successful"}
               {status === "error" && "Upload failed. Please try again."}
             </p>
