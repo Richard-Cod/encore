@@ -10,6 +10,7 @@ import { headers } from "next/headers";
 
 import { Server as NetServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
+import { APP_ENVS } from "@/config/envs";
 
 // let io: SocketIOServer | undefined;
 
@@ -17,7 +18,7 @@ import { Server as SocketIOServer } from "socket.io";
 
 async function sendToSocketServer(data: any) {
   // Make a POST request to the Socket.IO server to trigger a broadcast
-  const response = await fetch("http://localhost:8000/broadcast", {
+  const response = await fetch(APP_ENVS.socketUrl + "/broadcast", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
