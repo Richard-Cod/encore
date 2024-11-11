@@ -19,4 +19,6 @@ export const APP_ENVS = {
   credsForJson,
 
   uaeContainerName: "pdf-dev",
+
+  socketUrl: process.env.NEXT_PUBLIC_SOCKET_URL!,
 };

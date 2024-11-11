@@ -58,6 +58,7 @@ import {
   UploadProps,
 } from "@/logic/services/azureUploadService";
 import UAETable from "../UAETable";
+import { APP_ENVS } from "@/config/envs";
 
 interface LoginPayload {
   country: string;
@@ -91,7 +92,8 @@ const LoginForm = () => {
 
   useEffect(() => {
     // Connect to the Socket.IO server
-    const socket = io("http://localhost:8000"); // Socket.IO server URL
+    const socketUrl = APP_ENVS.socketUrl;
+    const socket = io(socketUrl); // Socket.IO server URL
 
     // Get the socket ID once the client is connected
     socket.on("connect", () => {
@@ -644,7 +646,6 @@ const LoginForm = () => {
               </Button>
             </form>
           )}
-
           {providers &&
             existingUser &&
             isFormSubmitted &&
@@ -672,7 +673,6 @@ const LoginForm = () => {
               /> */}
               </div>
             )}
-
           {providers && isFormSubmitted && formik.values.country == UAE && (
             <div>
               {/* <h1>Open Banking - Bank Coverage {currentConsentId} </h1> */}
