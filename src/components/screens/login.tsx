@@ -22,6 +22,7 @@ import {
   useGetCustomers,
   useGetProviders,
   useListAccounts,
+  useListBalances,
   useListTransactions,
   useUploadJson,
   // useUploadOnAzure,
@@ -45,6 +46,7 @@ import {
   GetCustomersResponse,
   isBankStatusOkSaudi,
   ListAccountsResult,
+  ListbalancesPayload,
   ListTransactionsPayload,
   //   isBankStatusOk,
 } from "@/logic/services/financeService";
@@ -59,7 +61,14 @@ import {
 } from "@/logic/services/azureUploadService";
 import UAETable from "../UAETable";
 import { APP_ENVS } from "@/config/envs";
-
+import Modal from "./modal";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 interface LoginPayload {
   country: string;
   email: string;
@@ -89,6 +98,9 @@ let socket: Socket;
 const LoginForm = () => {
   const [currentConsentId, setcurrentConsentId] = useState("");
   const [messages, setMessages] = useState([]);
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [iframeUrl, setIframeUrl] = useState("");
 
   useEffect(() => {
     // Connect to the Socket.IO server
@@ -262,7 +274,13 @@ const LoginForm = () => {
     console.log("consent created successfullu");
     console.log(result);
     setcurrentConsentId(result.data.id);
-    window.open(result.data.authorizationLink, "_blank");
+
+    const link = result.data.authorizationLink;
+
+    // setIframeUrl(link);
+    // setModalOpen(true); // Ouvrir la modal avec le lien
+
+    window.open(link, "_blank");
   });
 
   const { mutate: createCustomer, isLoading: isCreatingCustomer } =
@@ -273,6 +291,29 @@ const LoginForm = () => {
     });
 
   const [canFetchAccounts, setcanFetchAccounts] = useState(false);
+
+  const {
+    mutate: listUserBalances,
+    data: list_of_Balances,
+    isLoading: isGettingBalances,
+    isError: isGetBalancesError,
+    error: getBalancesError,
+  } = useListBalances(
+    (balances: any) => {
+      console.log("all Balances ", balances);
+      console.log("all accounts ", allAccountsJson);
+
+      const p: ListTransactionsPayload = {
+        consentId: currentConsentId,
+        accountIds: allAccountsJson!.data.map((val) => val.id),
+      };
+
+      setTimeout(() => {
+        listUserTransactions(p);
+      }, 20000);
+    },
+    () => {}
+  );
 
   const {
     mutate: listUserTransactions,
@@ -339,6 +380,15 @@ const LoginForm = () => {
         },
       };
       uploadJsonToAzure(transactionsJson);
+
+      const balancesJson: UploadProps = {
+        directoryName: companyFormatted,
+        fileName: "balance-history.json",
+        data: {
+          list_of_Balances: list_of_Balances,
+        },
+      };
+      uploadJsonToAzure(balancesJson);
     },
     () => {}
   );
@@ -351,7 +401,7 @@ const LoginForm = () => {
     error: getAccountsError,
   } = useListAccounts(
     (result: ListAccountsResult) => {
-      console.log("useListAccounts");
+      console.log("useListAccounts ", list_of_accounts?.data.length);
       console.log(result);
 
       setallAccountsJson(result);
@@ -373,17 +423,22 @@ const LoginForm = () => {
       //   ],
       // };
 
-      const p: ListTransactionsPayload = {
-        consentId: currentConsentId,
+      const p: ListbalancesPayload = {
         accountIds: result.data.map((val) => val.id),
       };
 
+      // handleListBalances(p,result)
+
       setTimeout(() => {
-        listUserTransactions(p);
-      }, 20000);
+        listUserBalances(p);
+      }, 1000);
     },
     () => {}
   );
+
+  // const handleListBalances = (p : ListbalancesPayload,accounts: ListAccountsResult) => {
+  //   listUserBalances(p)
+  // }
 
   const {
     data: generated_token,
@@ -699,6 +754,37 @@ const LoginForm = () => {
           )}
         </div>
       )}
+      {/* <Modal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        iframeUrl={iframeUrl}
+      /> */}
+
+      {/* <Button
+        onClick={() => {
+          setIframeUrl(
+            "https://link.eumlet.com/entity?redirect_url=google.com&nonce=7d294f2a195303e3fc77e0407a84a166&customer_id=e4609a5d-daa2-4ac7-8cef-a3c8f39a347a&end_user_id=a14b3295-7a92-4d63-841e-e24ba0b7c408&corporate=true"
+          );
+          setModalOpen(true); // Ouvrir la modal avec le lien
+        }}
+      >
+        click to open
+      </Button> */}
+
+      <AlertDialog open={isModalOpen} onOpenChange={(val) => setModalOpen(val)}>
+        {/* <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> */}
+        <AlertDialogContent className="w-full max-w-4xl border-0 ">
+          <iframe
+            src={iframeUrl}
+            className="w-full h-[500px] border-0"
+            title="Authorization"
+          ></iframe>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Close</AlertDialogCancel>
+            {/* <AlertDialogAction onClick={() => onOk()}>Continue</AlertDialogAction> */}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

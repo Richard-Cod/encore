@@ -1,4 +1,4 @@
-import React, { Provider } from "react";
+import React, { Provider, useState } from "react";
 // import {
 //   Table,
 //   TableHeader,
@@ -26,9 +26,15 @@ import {
 import { defaultUAEbanks, SA, saudi_defaultBanksList } from "@/constants";
 import { ModalCmp } from "./ModalCmp";
 import UploadFileComponent from "./UploadFileCmp";
-import { AlertDialogCancel, AlertDialogFooter } from "./ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+} from "./ui/alert-dialog";
 import { formatDirectoryName } from "@/logic/services/azureUploadService";
 import { APP_ENVS } from "@/config/envs";
+import { Button } from "./ui/button";
 
 // interface BanksTableProps {
 //   providers: GetProvidersResponse["data"];
@@ -48,6 +54,9 @@ function UAETable({
   email: string;
 }) {
   const data = saudi_defaultBanksList;
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [iframeUrl, setIframeUrl] = useState("");
 
   const handleSubmit = async (bankName: string) => {
     if (email && companyName) {
@@ -69,7 +78,10 @@ function UAETable({
         const linkEntityUrl = data.linkEntityUrl;
 
         // Open the modal with the link
-        window.open(linkEntityUrl, "_blank");
+        // window.open(linkEntityUrl, "_blank");
+
+        setIframeUrl(linkEntityUrl);
+        setModalOpen(true); // Ouvrir la modal avec le lien
 
         // openModal(linkEntityUrl);
       } catch (error) {
@@ -161,7 +173,33 @@ function UAETable({
               </TableRow>
             );
           })}
+        {/* 
+        <Button
+          onClick={() => {
+            setIframeUrl(
+              "https://link.eumlet.com/entity?redirect_url=google.com&nonce=7d294f2a195303e3fc77e0407a84a166&customer_id=e4609a5d-daa2-4ac7-8cef-a3c8f39a347a&end_user_id=a14b3295-7a92-4d63-841e-e24ba0b7c408&corporate=true"
+            );
+            setModalOpen(true); // Ouvrir la modal avec le lien
+          }}
+        >
+          click to open
+        </Button> */}
       </TableBody>
+
+      <AlertDialog open={isModalOpen} onOpenChange={(val) => setModalOpen(val)}>
+        {/* <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> */}
+        <AlertDialogContent className="w-full max-w-4xl border-0 ">
+          <iframe
+            src={iframeUrl}
+            className="w-full h-[500px] border-0"
+            title="Authorization"
+          ></iframe>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Close</AlertDialogCancel>
+            {/* <AlertDialogAction onClick={() => onOk()}>Continue</AlertDialogAction> */}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Table>
   );
 }

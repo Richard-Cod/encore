@@ -167,6 +167,10 @@ export interface ListTransactionsPayload {
   accountIds: string[];
 }
 
+export interface ListbalancesPayload {
+  accountIds: string[];
+}
+
 export function isBankStatusOkSaudi(
   bankName: string,
   providers: BankProvider[]
@@ -295,7 +299,7 @@ const financeService = {
   },
 
   // 7. List Accounts
-  async listAccounts(p: ListAccountsPayload): Promise<any> {
+  async listAccounts(p: ListAccountsPayload): Promise<ListAccountsResult> {
     const jwtAccessToken = getAccessTokenFront();
 
     const response = await axios.post<ListAccountsResult>(
@@ -329,15 +333,20 @@ const financeService = {
         jwtAccessToken,
       }
     );
+    return response.data;
+  },
 
-    // const response = await apiClient.get(
-    //   `/ais/Account/List?customerId=${customerId}&providerId=${providerId}`,
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${jwtAccessToken}`,
-    //     },
-    //   }
-    // );
+  async listbalances(p: ListbalancesPayload): Promise<any> {
+    const jwtAccessToken = getAccessTokenFront();
+
+    const response = await axios.post<ListAccountsResult>(
+      "/api/finance/list-balances",
+      // "/ais/Consent/Create",
+      {
+        payload: p,
+        jwtAccessToken,
+      }
+    );
     return response.data;
   },
 };

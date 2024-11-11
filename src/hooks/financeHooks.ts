@@ -6,6 +6,7 @@ import financeService, {
   CreateConsentPayload,
   CreateCustomerPayload,
   ListAccountsPayload,
+  ListbalancesPayload,
   ListTransactionsPayload,
 } from "@/logic/services/financeService";
 import { toast } from "./use-toast";
@@ -174,6 +175,22 @@ export function useListTransactions(onSuccess?: any, onError?: any) {
   return useMutation({
     mutationFn: async (p: ListTransactionsPayload) =>
       financeService.listTransactions(p),
+    onSuccess: (data) => {
+      // toast({ title: "Consent created successfully" });
+      // toast({ title: "Transactions fetched successfully" });
+      onSuccess && onSuccess(data);
+    },
+    onError: (error: AxiosError) => {
+      handleApiError(error);
+      onError && onError(error);
+    },
+  });
+}
+
+export function useListBalances(onSuccess?: any, onError?: any) {
+  return useMutation({
+    mutationFn: async (p: ListbalancesPayload) =>
+      financeService.listbalances(p),
     onSuccess: (data) => {
       // toast({ title: "Consent created successfully" });
       // toast({ title: "Transactions fetched successfully" });
