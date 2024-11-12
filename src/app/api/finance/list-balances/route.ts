@@ -5,28 +5,35 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import axios, { AxiosError } from "axios";
 import { GetProvidersResponse } from "@/logic/services/financeService";
 import { NextResponse } from "next/server";
-import { getCookie } from "cookies-next";
 import { AppConstants } from "@/constants";
-import { headers } from "next/headers";
 
+// Define the backend API base URL here
+const backendApiUrl = `https://sandbox.sparefinancial.sa/api/v1.0`;
+
+// Main handler function for the API endpoint
 export async function POST(req: Request, res: Response) {
-  const body = await req.json();
-  console.log("body ", body);
-
-  const jwtAccessToken = body.jwtAccessToken;
-  const payload = body.payload;
-
-  if (!jwtAccessToken) {
-    return new Response("Missing jwtAccessToken", {
-      status: 400,
-    });
-  }
-
   try {
-    const backendApiUrl = `https://sandbox.sparefinancial.sa/api/v1.0`;
-    const accountIds = payload.accountIds as String[];
-    console.log("all ids ", accountIds);
+    // Parse request body
+    const body = await req.json();
+    console.log("Request Body:", body);
 
+    // Extract JWT access token and payload
+    const jwtAccessToken = body.jwtAccessToken;
+    const payload = body.payload;
+    const accountIds = payload.accountIds as string[];
+
+    // Check if jwtAccessToken is provided
+    if (!jwtAccessToken) {
+      console.error("Missing jwtAccessToken");
+      return new Response("Missing jwtAccessToken", {
+        status: 400,
+      });
+    }
+
+    // Logging all account IDs
+    console.log("Account IDs:", accountIds);
+
+    // Prepare requests to fetch balance history for each account ID
     const promises = accountIds.map((accountId) =>
       axios.get<GetProvidersResponse>(
         `${backendApiUrl}/ais/Balance/History?accountId=${accountId}`,
@@ -38,30 +45,28 @@ export async function POST(req: Request, res: Response) {
       )
     );
 
+    // Await all responses
     const responses = await Promise.all(promises);
-    const allData = responses.map((response, index) => {
-      const accountId = accountIds[index];
-      
-      // Assuming `response.data` itself is the array containing balance entries
-      const balances = Array.isArray(response.data) ? response.data : []; // Ensures data is an array
-      return balances.map((balanceEntry) => ({
-        ...balanceEntry,
-        account_id: accountId, // Add account_id to each balance entry
-      }));
-    });
 
-    // Flatten the array if you want a single list of balances
-    const flattenedData = allData.flat();
-    
-    return NextResponse.json(flattenedData);
+    // Process and map each response to include account ID
+    const allData = responses.map((response, index) => ({
+      ...response.data,
+      account_id: accountIds[index],
+    }));
+
+    // Log the full data for debugging
+    console.log("Response Data:", allData);
+
+    // Return the processed data as JSON
+    return NextResponse.json(allData);
+
   } catch (error) {
     const e = error as AxiosError;
-    console.error("Error fetching balances:");
-    console.log(e);
-    console.log(e.response?.status);
-    console.log(e.response?.data);
-    if (e.response?.status == 401) {
-      return new Response("Error fetching balances", {
+    console.error("Error fetching balances:", e);
+
+    // Handle specific status codes if needed
+    if (e.response?.status === 401) {
+      return new Response("Unauthorized access - invalid token", {
         status: 401,
       });
     }
