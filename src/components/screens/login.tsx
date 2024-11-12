@@ -271,7 +271,7 @@ const LoginForm = () => {
     isLoading: isCreatingConsent,
     data: consentCreatedData,
   } = useCreateConsent((result: CreateConsentResponse) => {
-    console.log("consent created successfullu");
+    console.log("consent created successfully");
     console.log(result);
     setcurrentConsentId(result.data.id);
 
