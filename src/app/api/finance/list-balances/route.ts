@@ -1,64 +1,101 @@
+// ais/Balance/History?accountId=4405352b-4dd7-45c9-9ac0-6f915ad1c34b
+// pages/api/finance/getProviders.ts
+
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios, { AxiosError } from "axios";
 import { GetProvidersResponse } from "@/logic/services/financeService";
 import { NextResponse } from "next/server";
+import { getCookie } from "cookies-next";
 import { AppConstants } from "@/constants";
+import { headers } from "next/headers";
 
-const backendApiUrl = `https://sandbox.sparefinancial.sa/api/v1.0`;
+// const backendApiUrl = process.env.BACKEND_API_URL; // Assurez-vous de définir cette URL dans .env.local
 
 export async function POST(req: Request, res: Response) {
+  const body = await req.json();
+  console.log("body ", body);
+
+  const jwtAccessToken = body.jwtAccessToken;
+  const payload = body.payload;
+  // const accessToken = req.cookies.get(AppConstants.access_token_key)?.value
+
+  if (!jwtAccessToken) {
+    return new Response("Missing jwtAccessToken", {
+      status: 400,
+    });
+    // return NextResponse.json({ message: "Missing jwtAccessToken" });
+    // github-personal
+    // return res.status(400).json({ message: "Missing jwtAccessToken" });
+  }
+
   try {
-    const body = await req.json();
-    console.log("Request Body:", body);
+    const backendApiUrl = `https://sandbox.sparefinancial.sa/api/v1.0`;
+    const accountIds = payload.accountIds as String[];
+    console.log("all ids ", accountIds);
 
-    const jwtAccessToken = body.jwtAccessToken;
-    const payload = body.payload;
-    const accountIds = payload.accountIds as string[];
+    // const url = `${backendApiUrl}/ais/Transaction/List?consentId=${payload.consentId}&page=1&perPage=20&accountId=${accountIds[0]}`;
+    // console.log(url);
 
-    if (!jwtAccessToken) {
-      console.error("Missing jwtAccessToken");
-      return new Response("Missing jwtAccessToken", {
-        status: 400,
-      });
-    }
+    // const response = await axios.post<GetProvidersResponse>(url, {
+    //   headers: {
+    //     Authorization: `Bearer ${jwtAccessToken}`,
+    //   },
+    // });
 
-    console.log("Account IDs:", accountIds);
+    // console.log("response.data");
+    // console.log(response.data);
 
-    const promises = accountIds.map(async (accountId) => {
-      const response = await axios.get<GetProvidersResponse>(
+    const promises = accountIds.map((accountId) =>
+      axios.get<GetProvidersResponse>(
         `${backendApiUrl}/ais/Balance/History?accountId=${accountId}`,
         {
           headers: {
             Authorization: `Bearer ${jwtAccessToken}`,
           },
         }
+      )
+    );
+
+    const responses = await Promise.all(promises);
+    responses.forEach((response, index) => {
+      console.log(
+        `Response for accountId ${accountIds[index]}:`,
+        response.data
       );
-
-      // Log the response data to identify the structure
-      console.log(`Response for accountId ${accountId}:`, response.data);
-
-      // Adjusting structure: wrap response data in object
-      return {
-        accountId: accountId,
-        data: response.data,  // Keeping the raw response for now to inspect the data
-      };
     });
 
-    const list_of_Balances = await Promise.all(promises);
+    // const response = await axios.get<GetProvidersResponse>(
+    //   `${backendApiUrl}/ais/Transaction/List?consentId=${payload.consentId}&page=1&perPage=20&accountId=${payload.accountId}`,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${jwtAccessToken}`,
+    //     },
+    //   }
+    // );
+    const allData = responses.map((response, index) => ({
+      ...response.data,
+      account_id: accountIds[index],
+    }));
+    console.log();
+    // const data = []
 
-    console.log("Response Data:", list_of_Balances);
+    return NextResponse.json(allData);
+    // return NextResponse.json("allData");
 
-    return NextResponse.json({ list_of_Balances });
-
+    // res.status(200).json(response.data);
   } catch (error) {
     const e = error as AxiosError;
-    console.error("Error fetching balances:", e);
-
-    if (e.response?.status === 401) {
-      return new Response("Unauthorized access - invalid token", {
+    console.error("Error fetching balances:");
+    console.log(e);
+    console.log(e.response?.status);
+    console.log(e.response?.data);
+    if (e.response?.status == 401) {
+      return new Response("Error fetching balances", {
         status: 401,
       });
     }
+
+    // NextResponse.error()
 
     return new Response("Error fetching balances", {
       status: 500,
