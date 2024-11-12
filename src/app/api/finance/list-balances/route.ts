@@ -42,23 +42,20 @@ export async function POST(req: Request, res: Response) {
             Authorization: `Bearer ${jwtAccessToken}`,
           },
         }
-      )
+      ).then(response => ({
+        accountId: accountId,
+        history: response.data.history,
+      }))
     );
 
     // Await all responses
-    const responses = await Promise.all(promises);
-
-    // Process and map each response to include account ID
-    const allData = responses.map((response, index) => ({
-      ...response.data,
-      account_id: accountIds[index],
-    }));
+    const list_of_Balances = await Promise.all(promises);
 
     // Log the full data for debugging
-    console.log("Response Data:", allData);
+    console.log("Response Data:", list_of_Balances);
 
-    // Return the processed data as JSON
-    return NextResponse.json(allData);
+    // Return the processed data as JSON with the desired structure
+    return NextResponse.json({ list_of_Balances });
 
   } catch (error) {
     const e = error as AxiosError;
