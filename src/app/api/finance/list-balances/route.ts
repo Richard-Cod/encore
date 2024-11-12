@@ -42,8 +42,8 @@ export async function POST(req: Request, res: Response) {
     const allData = responses.map((response, index) => {
       const accountId = accountIds[index];
       
-      // Assuming `balances` is the array inside `response.data` containing balance entries
-      const balances = response.data.balances || []; // Adjust this based on actual data structure
+      // Assuming `response.data` itself is the array containing balance entries
+      const balances = Array.isArray(response.data) ? response.data : []; // Ensures data is an array
       return balances.map((balanceEntry) => ({
         ...balanceEntry,
         account_id: accountId, // Add account_id to each balance entry
