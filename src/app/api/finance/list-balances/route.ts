@@ -4,7 +4,6 @@ import { GetProvidersResponse } from "@/logic/services/financeService";
 import { NextResponse } from "next/server";
 import { AppConstants } from "@/constants";
 
-// Define the backend API base URL here
 const backendApiUrl = `https://sandbox.sparefinancial.sa/api/v1.0`;
 
 export async function POST(req: Request, res: Response) {
@@ -35,11 +34,13 @@ export async function POST(req: Request, res: Response) {
         }
       );
 
-      // If 'history' is a nested property or needs further extraction, handle it here
-      const history = response.data?.history || response.data; // Adjust as necessary
+      // Log the response data to identify the structure
+      console.log(`Response for accountId ${accountId}:`, response.data);
+
+      // Adjusting structure: wrap response data in object
       return {
         accountId: accountId,
-        history: history,
+        data: response.data,  // Keeping the raw response for now to inspect the data
       };
     });
 
