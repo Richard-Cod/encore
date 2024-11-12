@@ -9,41 +9,23 @@ import { getCookie } from "cookies-next";
 import { AppConstants } from "@/constants";
 import { headers } from "next/headers";
 
-// const backendApiUrl = process.env.BACKEND_API_URL; // Assurez-vous de définir cette URL dans .env.local
-
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
   console.log("body ", body);
 
   const jwtAccessToken = body.jwtAccessToken;
   const payload = body.payload;
-  // const accessToken = req.cookies.get(AppConstants.access_token_key)?.value
 
   if (!jwtAccessToken) {
     return new Response("Missing jwtAccessToken", {
       status: 400,
     });
-    // return NextResponse.json({ message: "Missing jwtAccessToken" });
-    // github-personal
-    // return res.status(400).json({ message: "Missing jwtAccessToken" });
   }
 
   try {
     const backendApiUrl = `https://sandbox.sparefinancial.sa/api/v1.0`;
     const accountIds = payload.accountIds as String[];
     console.log("all ids ", accountIds);
-
-    // const url = `${backendApiUrl}/ais/Transaction/List?consentId=${payload.consentId}&page=1&perPage=20&accountId=${accountIds[0]}`;
-    // console.log(url);
-
-    // const response = await axios.post<GetProvidersResponse>(url, {
-    //   headers: {
-    //     Authorization: `Bearer ${jwtAccessToken}`,
-    //   },
-    // });
-
-    // console.log("response.data");
-    // console.log(response.data);
 
     const promises = accountIds.map((accountId) =>
       axios.get<GetProvidersResponse>(
@@ -57,32 +39,19 @@ export async function POST(req: Request, res: Response) {
     );
 
     const responses = await Promise.all(promises);
-    responses.forEach((response, index) => {
-      console.log(
-        `Response for accountId ${accountIds[index]}:`,
-        response.data
-      );
+    const allData = responses.map((response, index) => {
+      // Assuming response.data contains an array of balances
+      const accountId = accountIds[index];
+      return response.data.map((balanceEntry) => ({
+        ...balanceEntry,
+        account_id: accountId, // Add account_id to each balance entry
+      }));
     });
 
-    // const response = await axios.get<GetProvidersResponse>(
-    //   `${backendApiUrl}/ais/Transaction/List?consentId=${payload.consentId}&page=1&perPage=20&accountId=${payload.accountId}`,
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${jwtAccessToken}`,
-    //     },
-    //   }
-    // );
-    const allData = responses.map((response, index) => ({
-      ...response.data,
-      account_id: accountIds[index],
-    }));
-    console.log();
-    // const data = []
-
-    return NextResponse.json(allData);
-    // return NextResponse.json("allData");
-
-    // res.status(200).json(response.data);
+    // Flatten the array if you want a single list of balances
+    const flattenedData = allData.flat();
+    
+    return NextResponse.json(flattenedData);
   } catch (error) {
     const e = error as AxiosError;
     console.error("Error fetching balances:");
@@ -94,8 +63,6 @@ export async function POST(req: Request, res: Response) {
         status: 401,
       });
     }
-
-    // NextResponse.error()
 
     return new Response("Error fetching balances", {
       status: 500,
