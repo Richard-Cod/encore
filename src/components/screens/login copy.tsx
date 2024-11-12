@@ -383,7 +383,7 @@ const LoginForm = () => {
 
       const balancesJson: UploadProps = {
         directoryName: companyFormatted,
-        fileName: "balances.json",
+        fileName: "balance-history.json",
         data: {
           list_of_Balances: list_of_Balances,
         },

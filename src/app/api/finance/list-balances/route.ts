@@ -47,7 +47,7 @@ export async function POST(req: Request, res: Response) {
 
     const promises = accountIds.map((accountId) =>
       axios.get<GetProvidersResponse>(
-        `${backendApiUrl}/ais/Balance/History?accountId=${accountId}`,
+        `${backendApiUrl}/ais/Balance/Get?accountId=${accountId}`,
         {
           headers: {
             Authorization: `Bearer ${jwtAccessToken}`,
