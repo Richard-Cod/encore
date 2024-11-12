@@ -16,17 +16,33 @@ export async function POST(req: Request, res: Response) {
 
   const jwtAccessToken = body.jwtAccessToken;
   const payload = body.payload;
+  // const accessToken = req.cookies.get(AppConstants.access_token_key)?.value
 
   if (!jwtAccessToken) {
     return new Response("Missing jwtAccessToken", {
       status: 400,
     });
+    // return NextResponse.json({ message: "Missing jwtAccessToken" });
+    // github-personal
+    // return res.status(400).json({ message: "Missing jwtAccessToken" });
   }
 
   try {
-    const backendApiUrl = "https://sandbox.sparefinancial.sa/api/v1.0";
-    const accountIds = payload.accountIds as string[];
+    const backendApiUrl = `https://sandbox.sparefinancial.sa/api/v1.0`;
+    const accountIds = payload.accountIds as String[];
     console.log("all ids ", accountIds);
+
+    // const url = `${backendApiUrl}/ais/Transaction/List?consentId=${payload.consentId}&page=1&perPage=20&accountId=${accountIds[0]}`;
+    // console.log(url);
+
+    // const response = await axios.post<GetProvidersResponse>(url, {
+    //   headers: {
+    //     Authorization: `Bearer ${jwtAccessToken}`,
+    //   },
+    // });
+
+    // console.log("response.data");
+    // console.log(response.data);
 
     const promises = accountIds.map((accountId) =>
       axios.post<GetProvidersResponse>(
@@ -41,29 +57,45 @@ export async function POST(req: Request, res: Response) {
     );
 
     const responses = await Promise.all(promises);
-    const allData = responses.map((response, index) => ({
-      account_id: accountIds[index],
-      data: response.data.data.map((transaction) => ({
-        account_id: accountIds[index],
-        ...transaction,
-      })),
-    }));
+    responses.forEach((response, index) => {
+      console.log(
+        `Response for accountId ${accountIds[index]}:`,
+        response.data
+      );
+    });
 
-    console.log(allData);
+    // const response = await axios.get<GetProvidersResponse>(
+    //   `${backendApiUrl}/ais/Transaction/List?consentId=${payload.consentId}&page=1&perPage=20&accountId=${payload.accountId}`,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${jwtAccessToken}`,
+    //     },
+    //   }
+    // );
+    const allData = responses.map((response, index) => ({
+      ...response.data,
+      account_id: accountIds[index],
+    }));
+    console.log();
+    // const data = []
 
     return NextResponse.json(allData);
+    // return NextResponse.json("allData");
+
+    // res.status(200).json(response.data);
   } catch (error) {
     const e = error as AxiosError;
     console.error("Error fetching Transactions:");
     console.log(e);
     console.log(e.response?.status);
     console.log(e.response?.data);
-
     if (e.response?.status == 401) {
       return new Response("Error fetching Transactions", {
         status: 401,
       });
     }
+
+    // NextResponse.error()
 
     return new Response("Error fetching Transactions", {
       status: 500,
