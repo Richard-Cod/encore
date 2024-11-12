@@ -1,10 +1,14 @@
+// pages/api/finance/getProviders.ts
+
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios, { AxiosError } from "axios";
 import { GetProvidersResponse } from "@/logic/services/financeService";
 import { NextResponse } from "next/server";
+import { getCookie } from "cookies-next";
 import { AppConstants } from "@/constants";
+import { headers } from "next/headers";
 
-const backendApiUrl = `https://sandbox.sparefinancial.sa/api/v1.0`;
+// const backendApiUrl = process.env.BACKEND_API_URL; // Assurez-vous de définir cette URL dans .env.local
 
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
@@ -20,6 +24,7 @@ export async function POST(req: Request, res: Response) {
   }
 
   try {
+    const backendApiUrl = "https://sandbox.sparefinancial.sa/api/v1.0";
     const accountIds = payload.accountIds as string[];
     console.log("all ids ", accountIds);
 
@@ -32,27 +37,30 @@ export async function POST(req: Request, res: Response) {
             Authorization: `Bearer ${jwtAccessToken}`,
           },
         }
-      ).then(response => {
-        // Insert account_id at the beginning of each transaction in the data array
-        const transactionsWithAccountId = response.data.map(transaction => ({
-          account_id: accountId,
-          ...transaction,
-        }));
-        return { data: transactionsWithAccountId };
-      })
+      )
     );
 
-    const list_of_Transactions = await Promise.all(promises);
-    console.log("Response Data:", list_of_Transactions);
+    const responses = await Promise.all(promises);
+    const allData = responses.map((response, index) => ({
+      account_id: accountIds[index],
+      data: response.data.data.map((transaction) => ({
+        account_id: accountIds[index],
+        ...transaction,
+      })),
+    }));
 
-    return NextResponse.json({ list_of_Transactions });
+    console.log(allData);
 
+    return NextResponse.json(allData);
   } catch (error) {
     const e = error as AxiosError;
-    console.error("Error fetching Transactions:", e);
+    console.error("Error fetching Transactions:");
+    console.log(e);
+    console.log(e.response?.status);
+    console.log(e.response?.data);
 
-    if (e.response?.status === 401) {
-      return new Response("Unauthorized access - invalid token", {
+    if (e.response?.status == 401) {
+      return new Response("Error fetching Transactions", {
         status: 401,
       });
     }
