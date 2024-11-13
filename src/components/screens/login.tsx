@@ -349,6 +349,7 @@ const LoginForm = () => {
         data: {
           country: formik.values.country,
           email: formik.values.email,
+          companyname: formik.values.companyName,
           category: selectedCategory,
           subCategory: selectedSubCategory,
         },
