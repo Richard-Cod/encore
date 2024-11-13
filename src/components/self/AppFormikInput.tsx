@@ -30,7 +30,7 @@ function AppFormikInput({
     <div className={containerClasses + " relative"}>
       <label
         htmlFor="FirstName"
-        className="block text-sm font-medium text-gray-700"
+        className="block text-sm font-medium text-white"
       >
         {label}
       </label>
@@ -39,7 +39,7 @@ function AppFormikInput({
         className="flex items-center 
           border-[1px]
           rounded-md
-          border-gray-200 bg-white text-sm text-gray-700
+          border-gray-200 inputsBgGradient text-sm text-gray-700
           shadow-sm pl-2 pr-3"
       >
         <Input
@@ -54,6 +54,7 @@ function AppFormikInput({
           mt-1 w-full 
           border-none
           outline-none
+          bg-transparent
           "
         />
 

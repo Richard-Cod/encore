@@ -357,7 +357,7 @@ const LoginForm = () => {
         },
       };
       uploadJsonToAzure(dataJson);
-      
+
       console.log("before ", list_of_accounts);
 
       console.log("liste des comptes ");
@@ -625,10 +625,13 @@ const LoginForm = () => {
                       formik.setValues({ ...formik.values, country: val });
                     }}
                   >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Select a country" />
+                    <SelectTrigger className="w-[180px] inputsBgGradient">
+                      <SelectValue
+                        className=""
+                        placeholder="Select a country"
+                      />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="">
                       <SelectGroup>
                         {countries.map((country) => {
                           return (

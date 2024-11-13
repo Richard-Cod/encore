@@ -45,7 +45,7 @@ export function SelectCategory({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between"
+          className="justify-between inputsBgGradient"
         >
           <span className="capitalize">
             {selectedCategory?.name
