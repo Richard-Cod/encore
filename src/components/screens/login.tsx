@@ -355,7 +355,7 @@ const LoginForm = () => {
         },
       };
       uploadJsonToAzure(dataJson);
-
+      console.log("companyName ", formik.values.companyName);
       console.log("before ", list_of_accounts);
 
       console.log("liste des comptes ");
