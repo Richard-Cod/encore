@@ -353,7 +353,7 @@ const LoginForm = () => {
           category: selectedCategory,
           subCategory: selectedSubCategory,
           bankname: selectedBank?.englishName,
-          clientname: "contoso",
+          clientname: "orbii",
         },
       };
       uploadJsonToAzure(dataJson);
