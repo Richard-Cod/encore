@@ -352,12 +352,13 @@ const LoginForm = () => {
           companyname: formik.values.companyName,
           category: selectedCategory,
           subCategory: selectedSubCategory,
+          bankname: selectedBank?.englishName,
         },
       };
       uploadJsonToAzure(dataJson);
       
       console.log("before ", list_of_accounts);
-      console.log("companyName ", formik.values.companyName);
+
       console.log("liste des comptes ");
       console.log(allAccountsJson);
 
