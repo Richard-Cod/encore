@@ -625,7 +625,7 @@ const LoginForm = () => {
                       formik.setValues({ ...formik.values, country: val });
                     }}
                   >
-                    <SelectTrigger className="w-[180px] inputsBgGradient">
+                    <SelectTrigger className="w-[200px] inputsBgGradient">
                       <SelectValue
                         className=""
                         placeholder="Select a country"
