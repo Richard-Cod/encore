@@ -8,14 +8,7 @@ export default function Navbar() {
     // <nav className="bg-primary text-primary-foreground fixed w-full z-40">
     <nav className="customBgGradient text-primary-foreground ">
       <div className="container mx-auto px-4 py-2 flex justify-between items-center cursor-pointer">
-        <img
-          onClick={() => {
-            window.location.reload();
-          }}
-          className=" h-12"
-          src="/app-logo-dark.png"
-          alt=""
-        />
+        <img className=" h-12" src="/app-logo-dark.png" alt="" />
         {/* <p
           onClick={() => {
             window.location.reload();
