@@ -66,6 +66,8 @@
   body {
     @apply bg-background text-foreground;
     background-image: url('/darker.png');
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
   .customBgGradient{
