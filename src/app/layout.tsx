@@ -9,12 +9,17 @@ import { Toaster } from "@/components/ui/toaster";
 import DataProvider from "./DataProvider";
 import Navbar from "@/components/Navbar";
 
-// import '../../i18n';
+// 👇 import local font
+import localFont from "next/font/local";
 
-const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+//👇 Configure our local font object
+// import a from ""
+const myFont = localFont({ src: "../ourfont/DenimINKWDTRIAL-Light.otf" });
+
+// const fontSans = FontSans({
+//   subsets: ["latin"],
+//   variable: "--font-sans",
+// });
 
 export const metadata: Metadata = {
   title: "Orbii app | Orbii", // Remplace par ton nom
@@ -29,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("", fontSans.variable)}>
+      <body className={cn("", myFont.className)}>
         <AppQueryProvider>
           <OurStoreProvider>
             <DataProvider>
