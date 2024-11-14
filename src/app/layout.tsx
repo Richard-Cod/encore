@@ -22,7 +22,7 @@ const myFont = localFont({ src: "../ourfont/DenimINKWDTRIAL-Light.otf" });
 // });
 
 export const metadata: Metadata = {
-  title: "Orbii app | Orbii", // Remplace par ton nom
+  title: "Orbii | Connect", // Remplace par ton nom
   description:
     "Découvrer la liste de nos business partenaires , devenez vous même partenaire  et bénéficiez d'une expérience de shopping améliorée !",
 };
