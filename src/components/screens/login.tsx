@@ -586,11 +586,10 @@ const LoginForm = () => {
       data-testid="login-form"
     >
       {/* <h1 className="text-large-semi uppercase mb-6">Login </h1> */}
-      {isCreatingToken ||
-      isLoadingCustomers ||
-      isCreatingCustomer ||
-      isCreatingConsent ? (
-        <p>Loading...</p>
+      {isCreatingToken || isLoadingCustomers || isCreatingCustomer || isCreatingConsent ? (
+      <div className="flex justify-center items-center">
+      <img src="/light.png" alt="Loading" className="animate-spin w-16 h-16" />
+      </div>
       ) : (
         <div className="md:min-w-[500px]">
           {/* {providers ? "e" : "def"} */}
