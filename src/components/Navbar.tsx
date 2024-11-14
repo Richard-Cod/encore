@@ -14,20 +14,13 @@ export default function Navbar() {
       <div className="container mx-auto px-4 py-2 flex justify-between items-center cursor-pointer">
         <img
           onClick={() => {
-            window.location.reload();
+            window.location.href = "/";
           }}
           className=" h-12"
           src="/app-logo-dark.png"
           alt=""
         />
-        {/* <p
-          onClick={() => {
-            window.location.reload();
-          }}
-          className="text-2xl font-bold"
-        >
-          {AppConstants.project_name}
-        </p> */}
+
         <div className="space-x-4">
           {orbiUser && (
             <Button asChild>
