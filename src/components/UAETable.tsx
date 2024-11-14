@@ -119,7 +119,6 @@ function UAETable({
                 <span>{provider.name}</span>
               </TableCell>
             );
-
             const theRow = (
               <TableRow
                 onClick={() => {
