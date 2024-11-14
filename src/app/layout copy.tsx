@@ -34,9 +34,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-      </head>
       <body className={cn("", myFont.className)}>
         <AppQueryProvider>
           <OurStoreProvider>
@@ -44,6 +41,7 @@ export default function RootLayout({
               <div className="flex flex-col min-h-screen ">
                 <Navbar />
                 {children}
+
                 <Footer />
               </div>
             </DataProvider>
