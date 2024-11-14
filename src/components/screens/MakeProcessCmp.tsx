@@ -117,13 +117,6 @@ const MakeProcessCmp = () => {
       // setSocketId(socket.id); // Store the socket ID in the state
       console.log("Connected to server with socket ID:", socket.id);
     });
-    
-    const companyFormatted = formatDirectoryName(
-      formik.values.companyName,
-      selectedBank?.englishName!
-    );
-    console.log("companyName ", formik.values.companyName);
-    console.log("companyFormatted ", companyFormatted);
 
     // Listen for 'broadcast' events from the server
     socket.on("broadcast", (data) => {
@@ -147,10 +140,10 @@ const MakeProcessCmp = () => {
 
 
         setisFormSubmitted(false);
-        formik.setValues({ email: "", companyName: "", country: "" });
+        // formik.setValues({ email: "", companyName: "", country: "" });
         setselectedCategory(null);
         setselectedSubCategory(null);
-        formik.setErrors({ companyName: "", country: "", email: "" });
+        // formik.setErrors({ companyName: "", country: "", email: "" });
         formik.setTouched({ companyName: false, country: false, email: false });
 
         setTimeout(() => {
@@ -353,12 +346,12 @@ const MakeProcessCmp = () => {
       };
       const filePath = `uploads/${new Date().toISOString()}_${"test"}`;
 
-      // const companyFormatted = formatDirectoryName(
-      //   formik.values.companyName,
-      //   selectedBank?.englishName!
-      // );
-      // console.log("companyName ", formik.values.companyName);
-      // console.log("companyFormatted ", companyFormatted);
+      const companyFormatted = formatDirectoryName(
+        formik.values.companyName,
+        selectedBank?.englishName!
+      );
+      console.log("companyName ", formik.values.companyName);
+      console.log("companyFormatted ", companyFormatted);
 
       //     [X] - Un fichier qui contient PAYS , EMAIL , COMPANY , Category,SubCat, data.json
       // [X] - Un fichier qui contient liste des comptes list-of-accounts.json
