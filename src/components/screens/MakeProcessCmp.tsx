@@ -69,7 +69,9 @@ import {
   AlertDialogFooter,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-interface LoginPayload {
+import { useAppSelector } from "@/logic/redux/hooks";
+import { selectOrbiUser } from "@/logic/redux/reducers/auth";
+interface FormPayload {
   country: string;
   email: string;
   companyName: string;
@@ -80,14 +82,14 @@ const countries = [
   { code: SA, name: "Saudi Arabia", flag: "/saudi-flag.webp" },
 ];
 
-const initialValues: LoginPayload = {
+const initialValues: FormPayload = {
   country: "AE",
   //   country: "",
   email: "",
   companyName: "",
 };
 
-const loginSchema = Yup.object().shape({
+const formSchema = Yup.object().shape({
   country: Yup.string().required("Country is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   companyName: Yup.string().required("Company name is required"),
@@ -95,7 +97,7 @@ const loginSchema = Yup.object().shape({
 
 let socket: Socket;
 
-const LoginForm = () => {
+const MakeProcessCmp = () => {
   const [currentConsentId, setcurrentConsentId] = useState("");
   const [messages, setMessages] = useState([]);
 
@@ -362,7 +364,7 @@ const LoginForm = () => {
           category: selectedCategory,
           subCategory: selectedSubCategory,
           bankname: selectedBank?.englishName,
-          clientname: "orbii",
+          clientname: orbiUser?.username || "orbii",
         },
       };
       uploadJsonToAzure(dataJson);
@@ -519,7 +521,7 @@ const LoginForm = () => {
 
   const formik = useFormik({
     initialValues,
-    validationSchema: loginSchema,
+    validationSchema: formSchema,
     onSubmit: (formValues) => {
       setisFormSubmitted(true);
       //   console.log("formValues ", formValues);
@@ -588,6 +590,8 @@ const LoginForm = () => {
   const [selectedSubCategory, setselectedSubCategory] = useState<
     (typeof defaultSubCategories)[0] | null
   >();
+
+  const orbiUser = useAppSelector(selectOrbiUser);
 
   return (
     <div
@@ -719,6 +723,7 @@ const LoginForm = () => {
                 className="w-full mt-6"
               >
                 Submit
+                {/* {orbiUser ? "Submit as " + orbiUser : "Submit"} */}
               </Button>
             </form>
           )}
@@ -810,4 +815,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default MakeProcessCmp;

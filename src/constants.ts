@@ -63,6 +63,18 @@ export const SA = "SA";
 //   },
 // ];
 
+export type UserCredentials = {
+  username: string;
+  password: string;
+};
+
+export const credentialsList: UserCredentials[] = [
+  { username: "comfi", password: "A7xk7p6KeKb3P5" },
+  { username: "orbii", password: "dfgdfFZ5N4v78" },
+  { username: "crossval", password: "7SqnueFZ5N4v78" },
+  { username: "richard", password: "test" },
+];
+
 type BankUAE = {
   name: string;
   isActive: boolean;

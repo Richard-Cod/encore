@@ -2,8 +2,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AppConstants } from "@/constants";
+import { useAppSelector } from "@/logic/redux/hooks";
+import { selectOrbiUser } from "@/logic/redux/reducers/auth";
 
 export default function Navbar() {
+  const orbiUser = useAppSelector(selectOrbiUser);
+
   return (
     // <nav className="bg-primary text-primary-foreground fixed w-full z-40">
     <nav className="customBgGradient text-primary-foreground ">
@@ -24,17 +28,19 @@ export default function Navbar() {
         >
           {AppConstants.project_name}
         </p> */}
-        {/* <div className="space-x-4">
-          <Button variant="ghost" asChild>
-            <Link href="/dashboard">Dashboard</Link>
-          </Button>
-          <Button variant="ghost" asChild>
+        <div className="space-x-4">
+          {orbiUser && (
+            <Button asChild>
+              <Link href="/dashboard">Dashboard</Link>
+            </Button>
+          )}
+          {/* <Button variant="ghost" asChild>
             <Link href="/reports">Reports</Link>
           </Button>
           <Button variant="ghost" asChild>
             <Link href="/settings">Settings</Link>
-          </Button>
-        </div> */}
+          </Button> */}
+        </div>
       </div>
     </nav>
   );

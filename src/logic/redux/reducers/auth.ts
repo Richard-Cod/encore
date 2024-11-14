@@ -1,17 +1,20 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { getCookie } from "cookies-next";
-import { AppConstants } from "@/constants";
+import { AppConstants, UserCredentials } from "@/constants";
 import { User } from "@/logic/interfaces";
 
 interface InitialState {
   loading: boolean;
   currentUser: User | null;
+
+  currentOrbiUser: UserCredentials | null;
 }
 
 const initialState: InitialState = {
   loading: false,
   currentUser: null,
+  currentOrbiUser: null,
 };
 
 export const authSlice = createSlice({
@@ -20,6 +23,10 @@ export const authSlice = createSlice({
   reducers: {
     setCurrentUser: (state, action: PayloadAction<User | null>) => {
       state.currentUser = action.payload;
+    },
+
+    setOrbiUser: (state, action: PayloadAction<UserCredentials | null>) => {
+      state.currentOrbiUser = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -43,5 +50,8 @@ export const selectIsLoading = (state: RootState) => state.AuthReducer.loading;
 
 export const selectCurrentUser = (state: RootState) =>
   state.AuthReducer.currentUser;
+
+export const selectOrbiUser = (state: RootState) =>
+  state.AuthReducer.currentOrbiUser;
 
 export default authSlice.reducer;
