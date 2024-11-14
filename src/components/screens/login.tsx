@@ -784,10 +784,10 @@ const LoginForm = () => {
             className="w-full h-[700px]"
             title="Authorization"
           ></iframe>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Close</AlertDialogCancel>
-            {/* <AlertDialogAction onClick={() => onOk()}>Continue</AlertDialogAction> */}
+          <AlertDialogFooter className="mt-4">
+          <AlertDialogCancel className="mt-2">Close</AlertDialogCancel>
           </AlertDialogFooter>
+
         </AlertDialogContent>
       </AlertDialog>
     </div>
