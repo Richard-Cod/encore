@@ -194,7 +194,6 @@ function UAETable({
         className="w-full sm:h-[600px] md:h-[800px] border-0"
         title="Authorization"
         />
-        </iframe>
           <AlertDialogFooter>
             <AlertDialogCancel>Close</AlertDialogCancel>
             {/* <AlertDialogAction onClick={() => onOk()}>Continue</AlertDialogAction> */}
