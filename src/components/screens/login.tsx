@@ -781,11 +781,13 @@ const LoginForm = () => {
         <AlertDialogContent className="bg-white rounded-lg w-full max-w-5xl p-4 relative">
           <iframe
             src={iframeUrl}
-            className="w-full h-[700px]"
+            className="w-full h-[700px] mb-4"
             title="Authorization"
           ></iframe>
-          <AlertDialogFooter className="mt-4">
-          <AlertDialogCancel className="mt-4">Close</AlertDialogCancel>
+          <AlertDialogFooter>
+          <div className="mt-4">
+          <AlertDialogCancel>Close</AlertDialogCancel>
+          </div>
           </AlertDialogFooter>
 
         </AlertDialogContent>
