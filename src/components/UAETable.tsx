@@ -191,7 +191,7 @@ function UAETable({
         <AlertDialogContent className="w-full max-w-4xl border-0 ">
         <iframe
         src={iframeUrl}
-        className="w-full sm:h-[600px] md:h-[800px] border-0"
+        className="w-full sm:h-[600px] md:h-[900px] border-0"
         title="Authorization"
         />
           <AlertDialogFooter>
