@@ -138,7 +138,7 @@ const LoginForm = () => {
         formik.setValues({ email: "", companyName: "", country: "" });
         setselectedCategory(null);
         setselectedSubCategory(null);
-        formik.setErrors({});
+        formik.setErrors({companyName : "",country : "" , email : ""});
 
         setTimeout(() => {
           listUserAccounts({
