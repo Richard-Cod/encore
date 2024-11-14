@@ -117,6 +117,13 @@ const MakeProcessCmp = () => {
       // setSocketId(socket.id); // Store the socket ID in the state
       console.log("Connected to server with socket ID:", socket.id);
     });
+    
+    const companyFormatted = formatDirectoryName(
+      formik.values.companyName,
+      selectedBank?.englishName!
+    );
+    console.log("companyName ", formik.values.companyName);
+    console.log("companyFormatted ", companyFormatted);
 
     // Listen for 'broadcast' events from the server
     socket.on("broadcast", (data) => {
@@ -137,12 +144,7 @@ const MakeProcessCmp = () => {
 
         if (!existingUser || !selectedBank) return;
 
-        const companyFormatted = formatDirectoryName(
-          formik.values.companyName,
-          selectedBank?.englishName!
-        );
-        console.log("companyName ", formik.values.companyName);
-        console.log("companyFormatted ", companyFormatted);
+
 
         setisFormSubmitted(false);
         formik.setValues({ email: "", companyName: "", country: "" });
