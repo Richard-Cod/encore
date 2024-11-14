@@ -35,6 +35,13 @@ import {
 import { formatDirectoryName } from "@/logic/services/azureUploadService";
 import { APP_ENVS } from "@/config/envs";
 import { Button } from "./ui/button";
+import { FileIcon, LinkIcon } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 // interface BanksTableProps {
 //   providers: GetProvidersResponse["data"];
@@ -108,69 +115,96 @@ function UAETable({
           .map((provider, key) => {
             const isASupportedBank = provider.isActive;
             const trigger = (
-              <TableCell className="flex space-x-2 items-center cursor-pointer hover:underline">
+              <TableCell className="flex space-x-2 items-center ">
                 <span>{provider.name}</span>
               </TableCell>
             );
 
-            return (
-              <TableRow key={key} className="hover:bg-gray-100">
-                {!isASupportedBank ? (
-                  <ModalCmp
-                    Content={
-                      <div>
-                        <UploadFileComponent
-                          containerName={APP_ENVS.uaeContainerName}
-                          directoryName={formatDirectoryName(
-                            companyName,
-                            provider.name
-                          )}
-                        />
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Close</AlertDialogCancel>
-                        </AlertDialogFooter>
-                      </div>
-                    }
-                    trigger={trigger}
-                  />
-                ) : (
-                  <TableCell
-                    onClick={() => {
-                      handleSubmit(provider.name);
-                    }}
-                    className="flex space-x-2 items-center cursor-pointer hover:underline"
-                  >
-                    <span>{provider.name}</span>
-                  </TableCell>
-                )}
+            const theRow = (
+              <TableRow
+                onClick={() => {
+                  handleSubmit(provider.name);
+                }}
+                key={key}
+                className="hover:bg-gray-100  cursor-pointer "
+              >
+                <TableCell className="flex space-x-2 items-center">
+                  <span>{provider.name}</span>
+                </TableCell>
+
                 {/* <TableCell>{isASupportedBank ? ""} </TableCell> */}
                 {/* <TableCell>{provider.status}</TableCell> */}
                 {/* <TableCell>{provider.status}</TableCell> */}
                 {/* <TableCell>
-                        <span
-                          className={
-                            provider.status === ProviderStatus.Active
-                              ? "text-green-500 font-semibold"
-                              : "text-red-500 font-semibold"
-                          }
-                        >
-                          {provider.status === ProviderStatus.Active
-                            ? "Active"
-                            : "Inactive"}
-                        </span>
-                      </TableCell> */}
+                    <span
+                      className={
+                        provider.status === ProviderStatus.Active
+                          ? "text-green-500 font-semibold"
+                          : "text-red-500 font-semibold"
+                      }
+                    >
+                      {provider.status === ProviderStatus.Active
+                        ? "Active"
+                        : "Inactive"}
+                    </span>
+                  </TableCell> */}
                 <TableCell>
                   <span
                     className={
                       isASupportedBank
                         ? "text-green-500 font-semibold"
-                        : "text-red-500 font-semibold"
+                        : "text-green-700 font-semibold"
                     }
                   >
-                    {isASupportedBank ? "Yes" : "No"}
+                    {isASupportedBank ? (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <LinkIcon className="w-4 h-4" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Connect to Bank Account</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      // <LinkIcon className="w-4 h-4" />
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <FileIcon className="w-4 h-4" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Upload Digital Statements</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
                   </span>
                 </TableCell>
               </TableRow>
+            );
+
+            return isASupportedBank ? (
+              theRow
+            ) : (
+              <ModalCmp
+                Content={
+                  <div>
+                    <UploadFileComponent
+                      containerName={APP_ENVS.uaeContainerName}
+                      directoryName={formatDirectoryName(
+                        companyName,
+                        provider.name
+                      )}
+                    />
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Close</AlertDialogCancel>
+                    </AlertDialogFooter>
+                  </div>
+                }
+                trigger={theRow}
+              />
             );
           })}
         {/* 
@@ -185,15 +219,15 @@ function UAETable({
           click to open
         </Button> */}
       </TableBody>
- 
+
       <AlertDialog open={isModalOpen} onOpenChange={(val) => setModalOpen(val)}>
         {/* <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> */}
         <AlertDialogContent className="w-full max-w-4xl border-0 ">
-        <iframe
-        src={iframeUrl}
-        className="w-full sm:h-[600px] md:h-[800px] border-0"
-        title="Authorization"
-        />
+          <iframe
+            src={iframeUrl}
+            className="w-full sm:h-[600px] md:h-[800px] border-0"
+            title="Authorization"
+          />
           <AlertDialogFooter>
             <AlertDialogCancel>Close</AlertDialogCancel>
             {/* <AlertDialogAction onClick={() => onOk()}>Continue</AlertDialogAction> */}
