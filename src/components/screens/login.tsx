@@ -102,6 +102,8 @@ const LoginForm = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [iframeUrl, setIframeUrl] = useState("");
 
+  // const [afterProcess, setafterProcess] = useState(false)
+
   useEffect(() => {
     // Connect to the Socket.IO server
     const socketUrl = APP_ENVS.socketUrl;
@@ -131,6 +133,12 @@ const LoginForm = () => {
         // setcanFetchAccounts(true);
 
         if (!existingUser || !selectedBank) return;
+
+        setisFormSubmitted(false);
+        formik.setValues({ email: "", companyName: "", country: "" });
+        setselectedCategory(null);
+        setselectedSubCategory(null);
+        formik.setErrors({});
 
         setTimeout(() => {
           listUserAccounts({
@@ -586,10 +594,17 @@ const LoginForm = () => {
       data-testid="login-form"
     >
       {/* <h1 className="text-large-semi uppercase mb-6">Login </h1> */}
-      {isCreatingToken || isLoadingCustomers || isCreatingCustomer || isCreatingConsent ? (
-      <div className="flex justify-center items-center">
-      <img src="/light.png" alt="Loading" className="animate-spin w-16 h-16" />
-      </div>
+      {isCreatingToken ||
+      isLoadingCustomers ||
+      isCreatingCustomer ||
+      isCreatingConsent ? (
+        <div className="flex justify-center items-center">
+          <img
+            src="/light.png"
+            alt="Loading"
+            className="animate-spin w-16 h-16"
+          />
+        </div>
       ) : (
         <div className="md:min-w-[500px]">
           {/* {providers ? "e" : "def"} */}
@@ -779,19 +794,17 @@ const LoginForm = () => {
       <AlertDialog open={isModalOpen} onOpenChange={(val) => setModalOpen(val)}>
         {/* <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> */}
         <AlertDialogContent className="bg-white rounded-lg w-full max-w-5xl p-4 relative">
-        <iframe
-          src={iframeUrl}
-          className="w-full h-[700px]"
-          title="Authorization"
-        ></iframe>
-        <div style={{ height: '1rem' }}></div> {/* Spacer div */}
-        <AlertDialogFooter>
-          <AlertDialogCancel>Close</AlertDialogCancel>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-
+          <iframe
+            src={iframeUrl}
+            className="w-full h-[700px]"
+            title="Authorization"
+          ></iframe>
+          <div style={{ height: "1rem" }}></div> {/* Spacer div */}
+          <AlertDialogFooter>
+            <AlertDialogCancel>Close</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
       </AlertDialog>
-
     </div>
   );
 };

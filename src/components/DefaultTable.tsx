@@ -29,6 +29,13 @@ import UploadFileComponent from "./UploadFileCmp";
 import { AlertDialogCancel, AlertDialogFooter } from "./ui/alert-dialog";
 import { formatDirectoryName } from "@/logic/services/azureUploadService";
 import { APP_ENVS } from "@/config/envs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import { FileIcon, LinkIcon } from "lucide-react";
 
 // interface BanksTableProps {
 //   providers: GetProvidersResponse["data"];
@@ -64,68 +71,82 @@ function DefaultTable({
               provider.bank,
               providers
             );
-            const trigger = (
-              <TableCell className="flex space-x-2 items-center cursor-pointer hover:underline">
-                <span>{provider.bank}</span>
-              </TableCell>
-            );
+            // const trigger = (
+            //   <TableCell className="flex space-x-2 items-center cursor-pointer hover:underline">
+            //     <span>{provider.bank}</span>
+            //   </TableCell>
+            // );
 
-            return (
-              <TableRow key={key} className="hover:bg-gray-100">
-                {!isASupportedBank ? (
-                  <ModalCmp
-                    Content={
-                      <div>
-                        <UploadFileComponent
-                          containerName={"pdf-dev-ksa"}
-                          directoryName={formatDirectoryName(
-                            companyName,
-                            provider.bank
-                          )}
-                        />
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Close</AlertDialogCancel>
-                        </AlertDialogFooter>
-                      </div>
-                    }
-                    trigger={trigger}
-                  />
-                ) : (
-                  <TableCell
-                    onClick={() => handleSelectBankSA(isASupportedBank)}
-                    className="flex space-x-2 items-center cursor-pointer hover:underline"
-                  >
-                    <span>{provider.bank}</span>
-                  </TableCell>
-                )}
-                {/* <TableCell>{isASupportedBank ? ""} </TableCell> */}
-                {/* <TableCell>{provider.status}</TableCell> */}
-                {/* <TableCell>{provider.status}</TableCell> */}
-                {/* <TableCell>
-                        <span
-                          className={
-                            provider.status === ProviderStatus.Active
-                              ? "text-green-500 font-semibold"
-                              : "text-red-500 font-semibold"
-                          }
-                        >
-                          {provider.status === ProviderStatus.Active
-                            ? "Active"
-                            : "Inactive"}
-                        </span>
-                      </TableCell> */}
+            const theRow = (
+              <TableRow
+                onClick={() =>
+                  isASupportedBank
+                    ? handleSelectBankSA(isASupportedBank)
+                    : console.log("")
+                }
+                key={key}
+                className="hover:bg-gray-100 cursor-pointer "
+              >
+                <TableCell className="flex space-x-2 items-center ">
+                  <span>{provider.bank}</span>
+                </TableCell>
+
                 <TableCell>
                   <span
                     className={
                       isASupportedBank
                         ? "text-green-500 font-semibold"
-                        : "text-red-500 font-semibold"
+                        : "text-green-700 font-semibold"
                     }
                   >
-                    {isASupportedBank ? "Yes" : "No"}
+                    {isASupportedBank ? (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <LinkIcon className="w-4 h-4" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Connect to Bank Account</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <FileIcon className="w-4 h-4" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Upload Digital Statements</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
                   </span>
                 </TableCell>
               </TableRow>
+            );
+
+            return isASupportedBank ? (
+              theRow
+            ) : (
+              <ModalCmp
+                Content={
+                  <div>
+                    <UploadFileComponent
+                      containerName={"pdf-dev-ksa"}
+                      directoryName={formatDirectoryName(
+                        companyName,
+                        provider.bank
+                      )}
+                    />
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Close</AlertDialogCancel>
+                    </AlertDialogFooter>
+                  </div>
+                }
+                trigger={theRow}
+              />
             );
           })}
       </TableBody>
