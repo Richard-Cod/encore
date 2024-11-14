@@ -185,7 +185,7 @@ function UAETable({
           click to open
         </Button> */}
       </TableBody>
-
+ 
       <AlertDialog open={isModalOpen} onOpenChange={(val) => setModalOpen(val)}>
         {/* <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> */}
         <AlertDialogContent className="w-full max-w-4xl border-0 ">
