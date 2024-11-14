@@ -95,6 +95,7 @@ const formSchema = Yup.object().shape({
   companyName: Yup.string().required("Company name is required"),
 });
 
+
 let socket: Socket;
 
 const MakeProcessCmp = () => {
@@ -135,6 +136,13 @@ const MakeProcessCmp = () => {
         // setcanFetchAccounts(true);
 
         if (!existingUser || !selectedBank) return;
+
+        const companyFormatted = formatDirectoryName(
+          formik.values.companyName,
+          selectedBank?.englishName!
+        );
+        console.log("companyName ", formik.values.companyName);
+        console.log("companyFormatted ", companyFormatted);
 
         setisFormSubmitted(false);
         formik.setValues({ email: "", companyName: "", country: "" });
@@ -342,12 +350,13 @@ const MakeProcessCmp = () => {
         test: true,
       };
       const filePath = `uploads/${new Date().toISOString()}_${"test"}`;
-      const companyFormatted = formatDirectoryName(
-        formik.values.companyName,
-        selectedBank?.englishName!
-      );
-      console.log("companyName ", formik.values.companyName);
-      console.log("companyFormatted ", companyFormatted);
+
+      // const companyFormatted = formatDirectoryName(
+      //   formik.values.companyName,
+      //   selectedBank?.englishName!
+      // );
+      // console.log("companyName ", formik.values.companyName);
+      // console.log("companyFormatted ", companyFormatted);
 
       //     [X] - Un fichier qui contient PAYS , EMAIL , COMPANY , Category,SubCat, data.json
       // [X] - Un fichier qui contient liste des comptes list-of-accounts.json
