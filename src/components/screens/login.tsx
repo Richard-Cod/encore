@@ -785,7 +785,7 @@ const LoginForm = () => {
             title="Authorization"
           ></iframe>
           <AlertDialogFooter className="mt-4">
-          <AlertDialogCancel className="mt-2">Close</AlertDialogCancel>
+          <AlertDialogCancel className="mt-4">Close</AlertDialogCancel>
           </AlertDialogFooter>
 
         </AlertDialogContent>
