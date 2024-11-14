@@ -139,12 +139,12 @@ const MakeProcessCmp = () => {
 
 
 
-        //setisFormSubmitted(false);
+        setisFormSubmitted(false);
         // formik.setValues({ email: "", companyName: "", country: "" });
         //setselectedCategory(null);
         //setselectedSubCategory(null);
         // formik.setErrors({ companyName: "", country: "", email: "" });
-        //formik.setTouched({ companyName: false, country: false, email: false });
+        formik.setTouched({ companyName: false, country: false, email: false });
 
         setTimeout(() => {
           listUserAccounts({
