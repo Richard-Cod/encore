@@ -346,7 +346,7 @@ const MakeProcessCmp = () => {
         formik.values.companyName,
         selectedBank?.englishName!
       );
-
+      console.log("companyName ", formik.values.companyName);
       console.log("companyFormatted ", companyFormatted);
 
       //     [X] - Un fichier qui contient PAYS , EMAIL , COMPANY , Category,SubCat, data.json
