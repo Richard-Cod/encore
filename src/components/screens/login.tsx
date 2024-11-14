@@ -779,19 +779,19 @@ const LoginForm = () => {
       <AlertDialog open={isModalOpen} onOpenChange={(val) => setModalOpen(val)}>
         {/* <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> */}
         <AlertDialogContent className="bg-white rounded-lg w-full max-w-5xl p-4 relative">
-          <iframe
-            src={iframeUrl}
-            className="w-full h-[700px] mb-4"
-            title="Authorization"
-          ></iframe>
-          <AlertDialogFooter>
-          <div className="mt-4">
+        <iframe
+          src={iframeUrl}
+          className="w-full h-[700px]"
+          title="Authorization"
+        ></iframe>
+        <div style={{ height: '1rem' }}></div> {/* Spacer div */}
+        <AlertDialogFooter>
           <AlertDialogCancel>Close</AlertDialogCancel>
-          </div>
-          </AlertDialogFooter>
+        </AlertDialogFooter>
+      </AlertDialogContent>
 
-        </AlertDialogContent>
       </AlertDialog>
+
     </div>
   );
 };
