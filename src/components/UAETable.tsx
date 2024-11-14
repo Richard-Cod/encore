@@ -189,11 +189,12 @@ function UAETable({
       <AlertDialog open={isModalOpen} onOpenChange={(val) => setModalOpen(val)}>
         {/* <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> */}
         <AlertDialogContent className="w-full max-w-4xl border-0 ">
-          <iframe
-            src={iframeUrl}
-            className="w-full h-[500px] border-0"
-            title="Authorization"
-          ></iframe>
+        <iframe
+        src={iframeUrl}
+        className="w-full sm:h-[600px] md:h-[800px] border-0"
+        title="Authorization"
+        />
+        </iframe>
           <AlertDialogFooter>
             <AlertDialogCancel>Close</AlertDialogCancel>
             {/* <AlertDialogAction onClick={() => onOk()}>Continue</AlertDialogAction> */}
