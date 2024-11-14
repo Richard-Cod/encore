@@ -10,7 +10,7 @@ export default function Modal({ isOpen, onClose, iframeUrl }) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg w-full max-w-5xl p-4 relative" // Increased max width here
+        className="bg-white rounded-lg w-full max-w-3xl p-4 relative"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -21,7 +21,7 @@ export default function Modal({ isOpen, onClose, iframeUrl }) {
         </button>
         <iframe
           src={iframeUrl}
-          className="w-full h-[700px]" // Increased height here
+          className="w-full h-[500px]"
           frameBorder="0"
           title="Authorization"
         ></iframe>
