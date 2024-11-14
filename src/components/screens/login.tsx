@@ -779,10 +779,10 @@ const LoginForm = () => {
 
       <AlertDialog open={isModalOpen} onOpenChange={(val) => setModalOpen(val)}>
         {/* <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> */}
-        <AlertDialogContent className="w-full max-w-4xl border-0 ">
+        <AlertDialogContent className="bg-white rounded-lg w-full max-w-5xl p-4 relative">
           <iframe
             src={iframeUrl}
-            className="w-full h-[500px] border-0"
+            className="w-full h-[700px]"
             title="Authorization"
           ></iframe>
           <AlertDialogFooter>

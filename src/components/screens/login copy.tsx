@@ -352,6 +352,8 @@ const LoginForm = () => {
           companyname: formik.values.companyName,
           category: selectedCategory,
           subCategory: selectedSubCategory,
+          bankname: selectedBank?.englishName,
+          clientname: "orbii",
         },
       };
       uploadJsonToAzure(dataJson);
@@ -384,7 +386,7 @@ const LoginForm = () => {
 
       const balancesJson: UploadProps = {
         directoryName: companyFormatted,
-        fileName: "balance-history.json",
+        fileName: "balances.json",
         data: {
           list_of_Balances: list_of_Balances,
         },
@@ -623,10 +625,13 @@ const LoginForm = () => {
                       formik.setValues({ ...formik.values, country: val });
                     }}
                   >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Select a country" />
+                    <SelectTrigger className="w-[200px] inputsBgGradient">
+                      <SelectValue
+                        className=""
+                        placeholder="Select a country"
+                      />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="">
                       <SelectGroup>
                         {countries.map((country) => {
                           return (
