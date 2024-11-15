@@ -58,8 +58,8 @@ function DefaultTable({
     <Table className="w-full bg-white shadow-md rounded-lg">
       <TableHeader>
         <TableRow className="border-b">
-          <TableHead>Bank</TableHead>
-          <TableHead>Supported</TableHead>
+          <TableHead>Banks Supported</TableHead>
+          <TableHead></TableHead>
           {/* <TableHead>Address</TableHead> */}
         </TableRow>
       </TableHeader>
