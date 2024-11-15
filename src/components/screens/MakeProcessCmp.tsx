@@ -95,7 +95,6 @@ const formSchema = Yup.object().shape({
   companyName: Yup.string().required("Company name is required"),
 });
 
-
 let socket: Socket;
 
 const MakeProcessCmp = () => {
@@ -136,8 +135,6 @@ const MakeProcessCmp = () => {
         // setcanFetchAccounts(true);
 
         if (!existingUser || !selectedBank) return;
-
-
 
         setisFormSubmitted(false);
         formik.setValues({ email: "", companyName: "", country: "" });
@@ -306,6 +303,9 @@ const MakeProcessCmp = () => {
 
   const [canFetchAccounts, setcanFetchAccounts] = useState(false);
 
+  // const [companyFormatted, setcompanyFormatted] = useState("");
+  const [submitedValues, setsubmitedValues] = useState<FormPayload>();
+
   const {
     mutate: listUserBalances,
     data: list_of_Balances,
@@ -339,17 +339,11 @@ const MakeProcessCmp = () => {
     (result: any) => {
       console.log("all transactions ", result);
 
-      const data = {
-        hello: "world",
-        name: "richard",
-        test: true,
-      };
-      const filePath = `uploads/${new Date().toISOString()}_${"test"}`;
-
       const companyFormatted = formatDirectoryName(
-        formik.values.companyName,
+        submitedValues?.companyName!,
         selectedBank?.englishName!
       );
+
       console.log("companyName ", formik.values.companyName);
       console.log("companyFormatted ", companyFormatted);
 
@@ -362,9 +356,9 @@ const MakeProcessCmp = () => {
         directoryName: companyFormatted,
         fileName: "data.json",
         data: {
-          country: formik.values.country,
-          email: formik.values.email,
-          companyname: formik.values.companyName,
+          country: submitedValues!.country,
+          email: submitedValues!.email,
+          companyname: submitedValues!.companyName,
           category: selectedCategory,
           subCategory: selectedSubCategory,
           bankname: selectedBank?.englishName,
@@ -527,6 +521,9 @@ const MakeProcessCmp = () => {
     initialValues,
     validationSchema: formSchema,
     onSubmit: (formValues) => {
+      // setcompanyFormatted(formValues.companyName);
+      setsubmitedValues(formValues);
+
       setisFormSubmitted(true);
       //   console.log("formValues ", formValues);
     },
@@ -564,6 +561,7 @@ const MakeProcessCmp = () => {
     console.log("bank ", bank);
     console.log("existingUser ", existingUser);
     setselectedBank(bank);
+
     if (existingUser) {
       const p: CreateConsentPayload = {
         customerId: existingUser.id,
@@ -743,7 +741,7 @@ const MakeProcessCmp = () => {
               /> */}
 
                 <DefaultTable
-                  companyName={formik.values.companyName}
+                  companyName={submitedValues?.companyName!}
                   // directoryName={formatDirectoryName(
                   //   formik.values.companyName,
                   //   selectedBank?.englishName!
@@ -767,8 +765,8 @@ const MakeProcessCmp = () => {
               /> */}
 
               <UAETable
-                email={formik.values.email}
-                companyName={formik.values.companyName}
+                email={submitedValues?.email!}
+                companyName={submitedValues?.companyName!}
                 // directoryName={formatDirectoryName(
                 //   formik.values.companyName,
                 //   selectedBank?.englishName!
