@@ -147,50 +147,6 @@ import { useDropzone } from "react-dropzone";
 import { Upload, File, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "./ui/progress";
-import {
-  formatDirectoryName,
-  UploadProps,
-} from "@/logic/services/azureUploadService";
-interface FormPayload {
-  country: string;
-  email: string;
-  companyName: string;
-}
-import {
-  BankProvider,
-  CreateConsentPayload,
-  CreateConsentResponse,
-  CreateCustomerPayload,
-  CreateCustomerResponse,
-  Customer,
-  GetCustomersResponse,
-  isBankStatusOkSaudi,
-  ListAccountsResult,
-  ListbalancesPayload,
-  ListTransactionsPayload,
-  //   isBankStatusOk,
-} from "@/logic/services/financeService";
-import {
-  saudi_defaultBanksList,
-  SA,
-  UAE,
-  defaultCategories,
-  defaultSubCategories,
-} from "@/constants";
-import {
-  useCreateConsent,
-  useCreateCustomer,
-  useGenerateToken,
-  useGetCustomers,
-  useGetProviders,
-  useListAccounts,
-  useListBalances,
-  useListTransactions,
-  useUploadJson,
-  // useUploadOnAzure,
-} from "@/hooks/financeHooks";
-import { useAppSelector } from "@/logic/redux/hooks";
-import { selectOrbiUser } from "@/logic/redux/reducers/auth";
 
 type FileWithStatus = {
   file: File;
@@ -229,50 +185,6 @@ export default function UploadFileComponent({
     accept: { "application/pdf": [".pdf"] },
     multiple: true, // Permet d'uploader plusieurs fichiers
   });
-
-  const [isUploadingFilesToAzure, setisUploadingFilesToAzure] = useState(false);
-  setisUploadingFilesToAzure(true);
-  const [submitedValues, setsubmitedValues] = useState<FormPayload>();
-  const [selectedBank, setselectedBank] = useState<BankProvider | null>(null);
-  const {
-    mutate: uploadJsonToAzure,
-    isLoading: isUploadingOnAzure,
-    data: azureUploadData,
-  } = useUploadJson(
-    (data: any) => {
-      // console.log("upload success");
-      console.log(data);
-    },
-    (error: any) => {
-      console.log("error on uploading");
-      console.log(error);
-    }
-  );
-  const orbiUser = useAppSelector(selectOrbiUser);
-  const [selectedCategory, setselectedCategory] = useState<
-  (typeof defaultCategories)[0] | null
->();
-const [selectedSubCategory, setselectedSubCategory] = useState<
-  (typeof defaultSubCategories)[0] | null
->();
-  const companyFormatted = formatDirectoryName(
-    submitedValues?.companyName!,
-    selectedBank?.englishName!
-  );
-  const dataJson: UploadProps = {
-    directoryName: companyFormatted,
-    fileName: "data.json",
-    data: {
-      country: submitedValues!.country,
-      email: submitedValues!.email,
-      companyname: submitedValues!.companyName,
-      category: selectedCategory,
-      subCategory: selectedSubCategory,
-      bankname: selectedBank?.englishName,
-      clientname: orbiUser?.username || "orbii",
-    },
-  };
-  uploadJsonToAzure(dataJson);
 
   const uploadFileToBackend = async (fileWithStatus: FileWithStatus) => {
     const { file } = fileWithStatus;
