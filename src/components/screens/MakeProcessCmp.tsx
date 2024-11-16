@@ -138,8 +138,8 @@ const MakeProcessCmp = () => {
 
         setisFormSubmitted(false);
         formik.setValues({ email: "", companyName: "", country: "" });
-        setselectedCategory(null);
-        setselectedSubCategory(null);
+        //setselectedCategory(null);
+        //setselectedSubCategory(null);
         formik.setErrors({ companyName: "", country: "", email: "" });
         formik.setTouched({ companyName: false, country: false, email: false });
 
@@ -345,8 +345,8 @@ const MakeProcessCmp = () => {
       );
 
       console.log("companyName ", submitedValues!.companyName);
-      console.log("category ", submitedValues!.category);
-      console.log("subcategory ", submitedValues!.subcategory);
+      console.log("category ", selectedCategory);
+      console.log("subcategory ", selectedSubCategory);
       console.log("companyFormatted ", companyFormatted);
 
       //     [X] - Un fichier qui contient PAYS , EMAIL , COMPANY , Category,SubCat, data.json
@@ -361,10 +361,8 @@ const MakeProcessCmp = () => {
           country: submitedValues!.country,
           email: submitedValues!.email,
           companyname: submitedValues!.companyName,
-          //category: selectedCategory,
-          //subCategory: selectedSubCategory,
-          category: submitedValues!.category,
-          subCategory: submitedValues!.subCategory,
+          category: selectedCategory,
+          subCategory: selectedSubCategory,
           bankname: selectedBank?.englishName,
           clientname: orbiUser?.username || "orbii",
         },
