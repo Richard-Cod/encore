@@ -18,7 +18,7 @@ export const APP_ENVS = {
   SAS_TOKEN: process.env.SAS_TOKEN,
   credsForJson,
 
-  uaeContainerName: "pdf-dev",
+  uaeContainerName: "pdf-prod",
 
   socketUrl: process.env.NEXT_PUBLIC_SOCKET_URL!,
 };

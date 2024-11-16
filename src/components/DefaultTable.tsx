@@ -134,7 +134,7 @@ function DefaultTable({
                 Content={
                   <div>
                     <UploadFileComponent
-                      containerName={"pdf-dev-ksa"}
+                      containerName={"pdf-prod-ksa"}
                       directoryName={formatDirectoryName(
                         companyName,
                         provider.bank
