@@ -344,7 +344,9 @@ const MakeProcessCmp = () => {
         selectedBank?.englishName!
       );
 
-      console.log("companyName ", formik.values.companyName);
+      console.log("companyName ", submitedValues!.companyName);
+      console.log("category ", submitedValues!.category);
+      console.log("subcategory ", submitedValues!.subcategory);
       console.log("companyFormatted ", companyFormatted);
 
       //     [X] - Un fichier qui contient PAYS , EMAIL , COMPANY , Category,SubCat, data.json
@@ -359,8 +361,10 @@ const MakeProcessCmp = () => {
           country: submitedValues!.country,
           email: submitedValues!.email,
           companyname: submitedValues!.companyName,
-          category: selectedCategory,
-          subCategory: selectedSubCategory,
+          //category: selectedCategory,
+          //subCategory: selectedSubCategory,
+          category: submitedValues!.category,
+          subCategory: submitedValues!.subCategory,
           bankname: selectedBank?.englishName,
           clientname: orbiUser?.username || "orbii",
         },
