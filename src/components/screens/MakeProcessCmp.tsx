@@ -463,7 +463,7 @@ const MakeProcessCmp = () => {
                   companyname: submitedValues!.companyName,
                   category: selectedCategory!.name,
                   subCategory: selectedSubCategory!.name,
-                  // bankname: selectedBank?.englishName,
+                  // bankname: selectedBank?.englishName ,
                   clientname: orbiUser?.username || "orbii",
                 }}
                 email={submitedValues?.email!}
