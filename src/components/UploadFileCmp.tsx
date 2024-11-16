@@ -147,6 +147,7 @@ import { useDropzone } from "react-dropzone";
 import { Upload, File, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "./ui/progress";
+import { FormPayload } from "@/logic/services/financeService";
 
 type FileWithStatus = {
   file: File;
@@ -154,12 +155,20 @@ type FileWithStatus = {
   status: "idle" | "uploading" | "success" | "error";
 };
 
+// {
+//   directoryName: companyFormatted,
+//   fileName: "data.json",
+//   data: formPayload,
+// }
+
 export default function UploadFileComponent({
   directoryName,
   containerName,
+  userData,
 }: {
   directoryName: string;
   containerName: string;
+  userData: Partial<FormPayload>;
 }) {
   const [files, setFiles] = useState<FileWithStatus[]>([]);
 
@@ -192,6 +201,7 @@ export default function UploadFileComponent({
     formData.append("file", file);
     formData.append("directoryName", directoryName);
     formData.append("containerName", containerName);
+    formData.append("userData", JSON.stringify(userData));
 
     // Marque le fichier comme "uploading" au départ
     setFiles((prevFiles) =>
@@ -238,6 +248,8 @@ export default function UploadFileComponent({
   const resetUploads = () => {
     setFiles([]);
   };
+
+  if (!userData) return <p>No User data {userData} </p>;
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">

@@ -63,15 +63,6 @@ export async function POST(req: Request, res: Response) {
         response.data
       );
     });
-
-    // const response = await axios.get<GetProvidersResponse>(
-    //   `${backendApiUrl}/ais/Transaction/List?consentId=${payload.consentId}&page=1&perPage=20&accountId=${payload.accountId}`,
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${jwtAccessToken}`,
-    //     },
-    //   }
-    // );
     const allData = responses.map((response, index) => ({
       ...response.data,
       account_id: accountIds[index],

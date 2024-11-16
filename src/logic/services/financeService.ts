@@ -140,7 +140,7 @@ interface Account {
   name: string;
 }
 
-interface DataItem {
+export interface DataItemAccounts {
   id: string;
   accounts: Account[];
   status: string;
@@ -153,7 +153,7 @@ interface DataItem {
 }
 
 export interface ListAccountsResult {
-  data: DataItem[];
+  data: DataItemAccounts[];
 }
 
 export interface ListAccountsPayload {
@@ -349,6 +349,41 @@ const financeService = {
     );
     return response.data;
   },
+
+  async makeAllProcess(p: AllProcessPayload): Promise<any> {
+    const jwtAccessToken = getAccessTokenFront();
+
+    const response = await axios.post<ListAccountsResult>(
+      "/api/finance/list-balances",
+      // "/ais/Consent/Create",
+      {
+        payload: p,
+        jwtAccessToken,
+      }
+    );
+    return response.data;
+  },
 };
 
+//List accounts
+// customerId: existingUser.id,
+// providerId: selectedBank.id,
+// consentId: currentConsentId,
+
+export interface AllProcessPayload {
+  customerId: string;
+  providerId: string;
+  consentId: string;
+  formPayload: FormPayload;
+}
+
+export interface FormPayload {
+  country: string;
+  email: string;
+  companyname: string;
+  category: string;
+  subCategory: string;
+  bankname: string;
+  clientname: string;
+}
 export default financeService;

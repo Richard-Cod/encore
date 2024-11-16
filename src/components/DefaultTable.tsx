@@ -17,6 +17,7 @@ import {
 } from "./ui/table";
 import {
   BankProvider,
+  FormPayload,
   GetProvidersResponse,
   // isBankStatusOk,
   isBankStatusOkSaudi,
@@ -47,10 +48,12 @@ function DefaultTable({
   companyName,
   providers,
   handleSelectBankSA,
+  formPayload,
 }: {
   providers: BankProvider[];
   handleSelectBankSA: any;
   companyName: string;
+  formPayload: Partial<FormPayload>;
 }) {
   const data = saudi_defaultBanksList;
 
@@ -139,6 +142,7 @@ function DefaultTable({
                         companyName,
                         provider.bank
                       )}
+                      userData={formPayload}
                     />
                     <AlertDialogFooter>
                       <AlertDialogCancel>Close</AlertDialogCancel>

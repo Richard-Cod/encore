@@ -54,11 +54,13 @@ function UAETable({
   companyName,
   // providers,
   handleSelectBankSA,
+  formPayload,
 }: {
   // providers: BankProvider[];
   handleSelectBankSA: any;
   companyName: string;
   email: string;
+  formPayload: any;
 }) {
   const data = saudi_defaultBanksList;
 
@@ -114,15 +116,17 @@ function UAETable({
           .toSorted((a, b) => (a.name > b.name ? 1 : -1))
           .map((provider, key) => {
             const isASupportedBank = provider.isActive;
-            const trigger = (
-              <TableCell className="flex space-x-2 items-center ">
-                <span>{provider.name}</span>
-              </TableCell>
-            );
+            // const trigger = (
+            //   <TableCell className="flex space-x-2 items-center ">
+            //     <span>{provider.name}</span>
+            //   </TableCell>
+            // );
             const theRow = (
               <TableRow
                 onClick={() => {
-                  handleSubmit(provider.name);
+                  isASupportedBank
+                    ? handleSubmit(provider.name)
+                    : console.log("");
                 }}
                 key={key}
                 className="hover:bg-gray-100  cursor-pointer "
@@ -191,6 +195,7 @@ function UAETable({
                 Content={
                   <div>
                     <UploadFileComponent
+                      userData={formPayload}
                       containerName={APP_ENVS.uaeContainerName}
                       directoryName={formatDirectoryName(
                         companyName,

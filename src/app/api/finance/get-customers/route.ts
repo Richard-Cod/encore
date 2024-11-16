@@ -24,7 +24,7 @@ export async function POST(req: Request, res: Response) {
     const backendApiUrl = `https://sandbox.sparefinancial.sa/api/v1.0`;
 
     const response = await axios.get<GetProvidersResponse>(
-      `${backendApiUrl}/ais/Customer/List?page=${1}&perPage=${20} `,
+      `${backendApiUrl}/ais/Customer/List?page=${1}&perPage=${100} `,
       {
         headers: {
           Authorization: `Bearer ${jwtAccessToken}`,

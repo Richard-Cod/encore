@@ -125,7 +125,10 @@ export function useGetCustomers({
   return useQuery({
     queryKey: ["customers", getProps?.page, getProps?.perPage],
     queryFn: async () =>
-      financeService.getCustomers(getProps?.page || 1, getProps?.perPage || 20),
+      financeService.getCustomers(
+        getProps?.page || 1,
+        getProps?.perPage || 100
+      ),
     onSuccess: (data) => {
       // toast({ title: "Customers fetched successfully" });
       onSuccess && onSuccess(data);
