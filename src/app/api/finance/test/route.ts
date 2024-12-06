@@ -201,6 +201,7 @@ function sleep(func: Function, ms: number) {
   return new Promise((resolve) => setTimeout(func, ms));
 }
 
+export const maxDuration = 60 * 5;
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -291,7 +292,7 @@ export async function POST(req: Request) {
     );
 
     // Étape 5 : Uploader les fichiers en parallèle
-    await uploadAllFiles(dataToUpload);
+    uploadAllFiles(dataToUpload);
 
     return NextResponse.json({ message: "Files uploaded successfully" });
   } catch (err) {
